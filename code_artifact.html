@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معهد التخطيط القومي - التفاوتات المكانية ودعم القرار</title>
+    
+    <!-- تحميل Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- تحميل خطوط جوجل (Cairo) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- تحميل أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- تحميل مكتبة الرسوم البيانية Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- إعدادات Tailwind المخصصة -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        npi: {
+                            dark: '#1e3a8a', // أزرق داكن رسمي
+                            light: '#3b82f6',
+                            accent: '#d97706', // ذهبي/برتقالي للتميز
+                            bg: '#f8fafc'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
+        .page-section { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chapter-btn.active {
+            background-color: #1e3a8a;
+            color: white;
+            border-right: 4px solid #d97706;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="text-gray-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-npi-dark text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex flex-col lg:flex-row justify-between items-center">
+                <div class="flex items-center space-x-4 space-x-reverse mb-4 lg:mb-0">
+                    <div class="bg-white p-2 rounded-full w-12 h-12 flex items-center justify-center text-npi-dark font-bold text-xl shadow-inner">
+                        <i class="fa-solid fa-chart-line text-npi-dark"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg md:text-xl font-bold leading-tight">معهد التخطيط القومي</h1>
+                        <p class="text-xs text-blue-200">منصة دعم القرار: التفاوتات المكانية وتوطين التنمية 2026</p>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="flex flex-wrap justify-center gap-2">
+                    <button onclick="navigate('home')" class="nav-btn bg-white/10 hover:bg-white/20 px-4 py-2 rounded-md text-sm font-semibold transition duration-200" data-target="home">
+                        <i class="fa-solid fa-house ml-1"></i> الرئيسية
+                    </button>
+                    <button onclick="navigate('dashboard')" class="nav-btn bg-white/10 hover:bg-white/20 px-4 py-2 rounded-md text-sm font-semibold transition duration-200" data-target="dashboard">
+                        <i class="fa-solid fa-gauge-high ml-1"></i> لوحة المؤشرات الوطنية
+                    </button>
+                    <button onclick="navigate('chapters')" class="nav-btn bg-white/10 hover:bg-white/20 px-4 py-2 rounded-md text-sm font-semibold transition duration-200" data-target="chapters">
+                        <i class="fa-solid fa-book-open ml-1"></i> فصول الدراسة والخرائط
+                    </button>
+                    <button onclick="navigate('accreditations')" class="nav-btn bg-white/10 hover:bg-white/20 px-4 py-2 rounded-md text-sm font-semibold transition duration-200" data-target="accreditations">
+                        <i class="fa-solid fa-certificate ml-1"></i> الاعتمادات
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 flex-grow">
+        
+        <!-- ================= PAGE: HOME ================= -->
+        <section id="home" class="page-section active">
+            <!-- Hero Title -->
+            <div class="bg-gradient-to-r from-npi-dark to-blue-900 text-white rounded-2xl shadow-xl p-8 md:p-12 mb-8 text-right relative overflow-hidden">
+                <div class="absolute left-10 bottom-0 text-white opacity-10 text-9xl hidden md:block">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                </div>
+                <span class="bg-npi-accent text-white text-xs font-bold px-3 py-1.5 rounded-full mb-4 inline-block">سلسلة قضايا التخطيط والتنمية رقم (373) - إصدار 2026</span>
+                <h2 class="text-3xl md:text-5xl font-extrabold mb-4 leading-tight">التفاوتات المكانية على مستوى المحافظات المصرية</h2>
+                <h3 class="text-xl md:text-2xl text-blue-200 mb-6 font-light">تشخيص الواقع وتوجيه السياسات لتحقيق العدالة المكانية</h3>
+                
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="navigate('dashboard')" class="bg-npi-accent hover:bg-amber-600 text-white px-6 py-3 rounded-lg font-bold text-sm shadow transition duration-200">
+                        <i class="fa-solid fa-play ml-1"></i> استكشاف لوحة المؤشرات التفاعلية
+                    </button>
+                    <button onclick="navigate('chapters')" class="bg-white/15 hover:bg-white/25 text-white px-6 py-3 rounded-lg font-semibold text-sm transition duration-200">
+                        تصفح الفصول والخرائط البيانية
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Card -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <div class="lg:col-span-2 bg-white rounded-xl shadow-md p-6 md:p-8 border border-gray-100 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold text-npi-dark mb-4 border-b pb-2"><i class="fa-solid fa-file-lines text-npi-accent ml-2"></i> ملخص توجيه السياسات لمتخذ القرار</h3>
+                        <p class="text-gray-700 leading-relaxed mb-4 text-justify text-base">
+                            يسعى البحث إلى رسم خريطة تفصيلية للتفاوتات المكانية بين المحافظات المصرية وبين الريف والحضر في إطار المتاح من بيانات سواء ديمغرافية أو اقتصادية أو اجتماعية، سعياً لفهم وتشخيص واقع العدالة المكانية في مصر والتي تعد جزءاً لا يتجزأ من العدالة الاجتماعية.
+                        </p>
+                        <p class="text-gray-700 leading-relaxed mb-4 text-justify text-base">
+                            يركز البحث على التفاوتات في مستويات المعيشة والدخل، وكذلك على الصعيد الاجتماعي والسكاني بالأخص فيما يتعلق بخصائص سكانية مثل معدلات الإعالة، والخدمات الاجتماعية (الصحة والتعليم والحماية الاجتماعية) على مستوى النفاذ للفرص والتأثير على النواتج.
+                        </p>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-lg border-r-4 border-blue-500 mt-4">
+                        <p class="text-blue-900 text-sm font-semibold">
+                            <i class="fa-solid fa-bullseye ml-1 text-blue-600"></i>
+                            <strong>الهدف الاستراتيجي والمخرجات:</strong> بناء مؤشر مركب لرصد أهم جوانب التفاوتات، والوقوف على العوامل الأساسية، وطرح رؤية متكاملة لتسريع التنمية بالمحافظات الأقل حظاً.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Fast Statistics Widget -->
+                <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-npi-dark mb-4 border-b pb-2"><i class="fa-solid fa-chart-pie text-npi-accent ml-1"></i> حقائق سريعة عن الدراسة</h3>
+                        <div class="space-y-4 my-4">
+                            <div class="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg transition">
+                                <span class="text-gray-600 text-sm">الفصول المدرجة</span>
+                                <span class="bg-blue-100 text-blue-800 font-bold px-3 py-1 rounded-full text-xs">6 فصول متكاملة</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg transition">
+                                <span class="text-gray-600 text-sm">الجداول الإحصائية</span>
+                                <span class="bg-amber-100 text-amber-800 font-bold px-3 py-1 rounded-full text-xs">أكثر من 30 جدولاً</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg transition">
+                                <span class="text-gray-600 text-sm">الرسوم والخرائط الهندسية</span>
+                                <span class="bg-green-100 text-green-800 font-bold px-3 py-1 rounded-full text-xs">أكثر من 50 شكلاً بيانياً</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg transition">
+                                <span class="text-gray-600 text-sm">منهجية القياس المركب</span>
+                                <span class="bg-purple-100 text-purple-800 font-bold px-3 py-1 rounded-full text-xs">مؤشر ثلاثي الأبعاد</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-900">
+                        <i class="fa-solid fa-triangle-exclamation ml-1 text-amber-600"></i>
+                        تم دمج البيانات المنهجية وتحليلات الحساسية إحصائياً لدعم صياغة القرارات وصياغة خطة التنمية الاقتصادية والاجتماعية للدولة.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Research Team -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-6 border-r-4 border-npi-accent pr-3">
+                    <div>
+                        <h3 class="text-2xl font-bold text-npi-dark">أعضاء الفريق البحثي</h3>
+                        <p class="text-gray-500 text-sm">نخبة من خبراء التنمية الإقليمية والسياسية والاجتماعية بالمعهد وخارجه</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Principal Investigator -->
+                    <div class="bg-gradient-to-br from-npi-dark to-blue-800 text-white rounded-xl shadow-lg p-6 relative overflow-hidden">
+                        <div class="absolute left-4 top-4 text-npi-accent opacity-20 text-5xl"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <span class="bg-amber-500 text-white text-xs px-2.5 py-0.5 rounded font-bold mb-3 inline-block">رئيس الفريق البحثي</span>
+                        <h4 class="text-xl font-bold mb-1">أ.د/ هويدا عدلي رومان</h4>
+                        <p class="text-blue-200 text-xs mb-3">أستاذ تنمية سياسية بمعهد التخطيط القومي</p>
+                        <p class="text-xs text-gray-300 border-t border-white/20 pt-3">توجيه البحث وصياغة حزم التدخلات والسياسات</p>
+                    </div>
+
+                    <!-- Team Members -->
+                    <div class="bg-white rounded-xl shadow border border-gray-100 p-6 flex flex-col justify-between">
+                        <div>
+                            <h4 class="text-lg font-bold text-gray-800 mb-1">أ.د/ فريد عبد العال</h4>
+                            <p class="text-xs text-amber-600 font-semibold mb-2">أستاذ متفرغ تنمية محلية وإقليمية</p>
+                            <p class="text-sm text-gray-600">صياغة تحليلات الإطار الإقليمي ومعالجة الفجوات المكانية وتطبيق السياسات التوطينية للتنمية المستدامة.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow border border-gray-100 p-6 flex flex-col justify-between">
+                        <div>
+                            <h4 class="text-lg font-bold text-gray-800 mb-1">أ.د/ أحمد عبد العزيز البقلي</h4>
+                            <p class="text-xs text-amber-600 font-semibold mb-2">أستاذ متفرغ سكان وتنمية</p>
+                            <p class="text-sm text-gray-600">قيادة دراسة المؤشرات الديموغرافية والتحضر ومعدلات الإعالة وتفاوت نمو قوة العمل عبر المحافظات.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow border border-gray-100 p-6 flex flex-col justify-between">
+                        <div>
+                            <h4 class="text-lg font-bold text-gray-800 mb-1">د/ أمل زكريا عامر</h4>
+                            <p class="text-xs text-amber-600 font-semibold mb-2">أستاذ مساعد اقتصاد إقليمي</p>
+                            <p class="text-sm text-gray-600">إدارة البعد الاقتصادي، وتحليل مستويات المعيشة والناتج المحلي، والإنفاق الاستهلاكي للأسر بالريف والحضر.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow border border-gray-100 p-6 flex flex-col justify-between">
+                        <div>
+                            <h4 class="text-lg font-bold text-gray-800 mb-1">د/ حامد هطل</h4>
+                            <p class="text-xs text-amber-600 font-semibold mb-2">أستاذ متفرغ تنمية عمرانية</p>
+                            <p class="text-sm text-gray-600">ربط مؤشرات التنمية العمرانية والمكانية وتحليل مستويات البنية الأساسية في تضييق فجوات التفاوتات.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow border border-gray-100 p-6 flex flex-col justify-between">
+                        <div>
+                            <h4 class="text-lg font-bold text-gray-800 mb-1">د/ محمد حسنين</h4>
+                            <p class="text-xs text-amber-600 font-semibold mb-2">مدرس إحصاء وتحليل بيانات</p>
+                            <p class="text-sm text-gray-600">بناء وتصميم "مؤشر التفاوتات المكانية المركب" وإجراء اختبارات الحساسية ومصفوفات عدم اليقين إحصائياً.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE: NATIONAL DASHBOARD ================= -->
+        <section id="dashboard" class="page-section">
+            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-npi-light mb-8">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-bold text-npi-dark">لوحة البيانات والمؤشرات الوطنية التفاعلية</h2>
+                        <p class="text-gray-500 text-sm mt-1">تستند لوحة التحليل هذه إلى قواعد البيانات الرسمية الواردة بالدراسة (2024-2026)</p>
+                    </div>
+                    
+                    <!-- Dynamic Selector -->
+                    <div class="mt-4 lg:mt-0 flex gap-2">
+                        <select id="indicatorSelector" onchange="updateDashboardCharts()" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 font-semibold">
+                            <option value="poverty">نسب الفقر المادي (%)</option>
+                            <option value="unemployment">معدل البطالة بقوة العمل (%)</option>
+                            <option value="illiteracy">نسبة الأمية 10 سنوات فأكثر (%)</option>
+                            <option value="composite">مؤشر التفاوتات المركب (أقرب لـ 1 يعادل فجوة أعلى)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Highlights Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                        <p class="text-xs text-blue-600 font-bold">المعدل القومي للفقر</p>
+                        <p class="text-2xl font-extrabold text-blue-900 mt-1">29.7 %</p>
+                        <p class="text-2xs text-blue-500 mt-2">مرتفع بالريف مقارنة بالحضر</p>
+                    </div>
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-100">
+                        <p class="text-xs text-amber-600 font-bold">معدل البطالة العام</p>
+                        <p class="text-2xl font-extrabold text-amber-900 mt-1">7.0 %</p>
+                        <p class="text-2xs text-amber-500 mt-2">تسجل الإناث معدلات مضاعفة</p>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-xl border border-purple-100">
+                        <p class="text-xs text-purple-600 font-bold">أعلى المحافظات فجوة ديمغرافية</p>
+                        <p class="text-2xl font-extrabold text-purple-900 mt-1">محافظات الصعيد</p>
+                        <p class="text-2xs text-purple-500 mt-2">ارتفاع الإعالة ومعدلات الإنجاب</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-xl border border-green-100">
+                        <p class="text-xs text-green-600 font-bold">أعلى المحافظات تقدماً بالدليل</p>
+                        <p class="text-2xl font-extrabold text-green-900 mt-1">بورسعيد والغردقة</p>
+                        <p class="text-2xs text-green-500 mt-2">المحافظات الحضرية والحدودية السياحية</p>
+                    </div>
+                </div>
+
+                <!-- Main Chart Wrapper -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-gray-50 rounded-xl p-4 border border-gray-200">
+                        <h4 class="font-bold text-gray-800 mb-3 flex items-center">
+                            <i class="fa-solid fa-chart-bar ml-2 text-npi-light"></i>
+                            مقارنة الأقاليم والمحافظات الدالة حسب المؤشر المختار
+                        </h4>
+                        <!-- Container resizing context -->
+                        <div class="relative h-72 md:h-96 w-full">
+                            <canvas id="dashboardMainChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Spatial Insights/Map Mock -->
+                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-3 flex items-center">
+                                <i class="fa-solid fa-magnifying-glass-chart ml-2 text-npi-accent"></i>
+                                تشخيص الفجوة التنموية الجغرافية
+                            </h4>
+                            <p class="text-sm text-gray-600 leading-relaxed mb-4">
+                                تكشف المقارنة بين المحافظات الكبرى ومحافظات الصعيد والحدود عن انقسامات تنموية تتطلب تدخلات مكانية موجهة:
+                            </p>
+                            
+                            <div class="space-y-3">
+                                <div class="p-2 bg-white rounded-lg border-r-4 border-emerald-500 text-xs">
+                                    <strong class="text-emerald-800 block">إقليم المحافظات الحضرية (القاهرة، الإسكندرية، بورسعيد):</strong>
+                                    أقل معدلات فقر، خدمات صحية أفضل، نسبة أمية منخفضة.
+                                </div>
+                                <div class="p-2 bg-white rounded-lg border-r-4 border-amber-500 text-xs">
+                                    <strong class="text-amber-800 block">إقليم ريف الوجه القبلي (أسيوط، سوهاج، المنيا):</strong>
+                                    يسجل أعلى فجوات الفقر والبطالة والوعاء الديموغرافي المتضخم ومعدلات أمية مرتفعة.
+                                </div>
+                                <div class="p-2 bg-white rounded-lg border-r-4 border-sky-500 text-xs">
+                                    <strong class="text-sky-800 block">المحافظات الحدودية (الوادي الجديد، البحر الأحمر):</strong>
+                                    تحظى بنصيب جيد من الاستثمار والخدمات لكل مواطن لكن تواجه تحدي تشتت التجمعات العمرانية.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-gray-200">
+                            <button onclick="navigate('chapters')" class="w-full text-center bg-npi-dark hover:bg-blue-900 text-white py-2 rounded-lg text-xs font-bold transition">
+                                عرض الجداول والرسوم التفصيلية لكل فصل <i class="fa-solid fa-arrow-left mr-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE: CHAPTERS (Interactive) ================= -->
+        <section id="chapters" class="page-section">
+            <div class="flex flex-col lg:flex-row gap-6 h-full min-h-[75vh]">
+                
+                <!-- Sidebar Menu (Chapters List) -->
+                <div class="w-full lg:w-1/3 xl:w-1/4 bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden flex flex-col">
+                    <div class="bg-gray-50 p-4 border-b border-gray-200 flex items-center justify-between">
+                        <h3 class="font-bold text-gray-800"><i class="fa-solid fa-list-ol text-npi-light ml-2"></i> محتويات فصول الدراسة</h3>
+                    </div>
+                    <div class="flex-grow overflow-y-auto custom-scrollbar" id="chapter-buttons-container">
+                        <!-- Buttons injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Main Content Area for Selected Chapter -->
+                <div class="w-full lg:w-2/3 xl:w-3/4 bg-white rounded-xl shadow-md border border-gray-100 flex flex-col overflow-hidden relative">
+                    
+                    <!-- Header of content -->
+                    <div class="bg-gradient-to-l from-npi-dark to-blue-800 p-6 text-white">
+                        <span id="ch-badge" class="bg-npi-accent text-white text-xs font-bold px-2 py-1 rounded mb-2 inline-block">اختر فصلاً</span>
+                        <h2 id="ch-title" class="text-xl md:text-2xl font-bold leading-snug">يرجى اختيار أحد الفصول من القائمة الجانبية لاستعراض خرائطه وجداوله التفاعلية</h2>
+                    </div>
+
+                    <!-- Body of content (Scrollable) -->
+                    <div class="p-6 md:p-8 flex-grow overflow-y-auto custom-scrollbar bg-gray-50/50" id="ch-content">
+                        
+                        <div class="text-center text-gray-400 py-20 flex flex-col items-center justify-center">
+                            <i class="fa-solid fa-map-location-dot text-7xl mb-4 text-gray-300"></i>
+                            <p class="text-lg font-bold text-gray-600">لوحة دعم القرار التفاعلية</p>
+                            <p class="text-sm mt-1 max-w-md mx-auto">صانع القرار الموقر، انقر على أي فصل لاستعراض ملخصه والخرائط الهندسية والرسوم والجداول التفصيلية الداعمة للتحليل.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE: ACCREDITATIONS ================= -->
+        <section id="accreditations" class="page-section">
+            <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden mt-4">
+                <div class="bg-npi-dark text-white text-center py-8">
+                    <i class="fa-solid fa-landmark text-5xl mb-3 text-npi-accent"></i>
+                    <h2 class="text-2xl font-bold">الاعتمادات والنشر وإخلاء المسؤولية</h2>
+                    <p class="text-gray-300 mt-2">جمهورية مصر العربية - وزارة التخطيط والتنمية الاقتصادية - معهد التخطيط القومي</p>
+                </div>
+                
+                <div class="p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 border-b pb-8">
+                        <div class="bg-gray-50 p-4 rounded-xl">
+                            <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">رئيس معهد التخطيط القومي</h3>
+                            <p class="text-lg font-bold text-npi-dark">أ.د. أشرف العربي</p>
+                            <p class="text-xs text-gray-500 mt-1">وزير التخطيط والمتابعة والإصلاح الإداري الأسبق</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-xl">
+                            <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">نائب رئيس المعهد لشئون البحوث والدراسات العليا</h3>
+                            <p class="text-lg font-bold text-npi-dark">أ.د. خالد عطية</p>
+                            <p class="text-xs text-gray-500 mt-1">الإشراف العلمي العام على سلسلة قضايا التخطيط والتنمية</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 p-3 rounded-lg text-blue-600 ml-4 shrink-0">
+                                <i class="fa-solid fa-barcode text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">بيانات النشر والتوثيق الدولي</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
+                                    <p class="text-sm text-gray-600"><strong>رقم الإيداع:</strong> 10030 / 2026</p>
+                                    <p class="text-sm text-gray-600"><strong>رقم ردمك (ISBN):</strong> 978-977-8848-32-8</p>
+                                    <p class="text-sm text-gray-600"><strong>سنة الطبع:</strong> 2026</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-orange-100 p-3 rounded-lg text-orange-600 ml-4 shrink-0">
+                                <i class="fa-solid fa-copyright text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">حقوق الطبع والنشر والملكية الفكرية</h4>
+                                <p class="text-sm text-gray-600 mt-1 leading-relaxed text-justify">
+                                    جميع الحقوق محفوظة لمعهد التخطيط القومي. يحظر اقتباس الأرقام أو إعادة صياغتها برمجياً دون ذكر المصدر صراحة: "معهد التخطيط القومي، دراسة التفاوتات المكانية على مستوى المحافظات المصرية، سلسلة قضايا التخطيط والتنمية، العدد 373، 2026."
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-gray-100 p-3 rounded-lg text-gray-600 ml-4 shrink-0">
+                                <i class="fa-solid fa-circle-info text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">تنويه المعهد المنهجي</h4>
+                                <p class="text-sm text-gray-600 mt-1 leading-relaxed text-justify">
+                                    الآراء الواردة في هذا البحث تمثل الآراء العلمية والتحليلية للفريق البحثي فقط، ولا تعبر بالضرورة عن التوجه الإداري أو الرسمي للحكومة أو المعهد، بل تهدف إلى تقديم مسارات بديلة لسياسات التوطين التنموي.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-950 text-gray-400 py-8 text-center text-sm border-t-4 border-npi-dark mt-auto">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+            <p>&copy; 2026 معهد التخطيط القومي، جمهورية مصر العربية. جميع الحقوق محفوظة.</p>
+            <div class="mt-4 md:mt-0 space-x-4 space-x-reverse">
+                <span class="hover:text-white transition cursor-pointer"><i class="fa-brands fa-facebook text-lg"></i></span>
+                <span class="hover:text-white transition cursor-pointer"><i class="fa-brands fa-twitter text-lg"></i></span>
+                <span class="hover:text-white transition cursor-pointer"><i class="fa-brands fa-linkedin text-lg"></i></span>
+                <span class="hover:text-white transition cursor-pointer"><i class="fa-solid fa-globe text-lg"></i></span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // National Indicator Dataset for the Main Interactive Dashboard
+        const dashboardData = {
+            governorates: [
+                "القاهرة", "الإسكندرية", "بورسعيد", "الدقهلية", "الغربية", "المنيا", "أسيوط", "سوهاج", "الوادي الجديد", "البحر الأحمر"
+            ],
+            poverty: [12.5, 14.2, 8.3, 21.0, 18.5, 54.0, 62.1, 59.6, 15.0, 10.2],
+            unemployment: [6.8, 8.2, 5.5, 7.1, 6.4, 11.2, 12.5, 10.8, 9.5, 4.3],
+            illiteracy: [12.0, 14.5, 7.1, 23.5, 21.8, 37.2, 40.5, 38.9, 11.2, 9.8],
+            composite: [0.22, 0.28, 0.15, 0.35, 0.32, 0.78, 0.85, 0.82, 0.29, 0.18]
+        };
+
+        // Full Study Chapters Database incorporating geometric/statistical details
+        const studyData = [
+            {
+                id: 1,
+                title: "أفضل الممارسات الدولية في معالجة التفاوتات المكانية",
+                summary: "يستعرض هذا الفصل 7 تجارب دولية كبرى (ألمانيا الموحدة، فرنسا، اليابان، كوريا الجنوبية، الصين، البرازيل، والمملكة المتحدة) لاستنباط نماذج التدخل المالي والمؤسسي وتوطين الاستثمار لتضييق الفجوات التنموية الإقليمية ومقارنتها بالحالة المصرية.",
+                type: "comparison_matrix",
+                tables: [
+                    "مصفوفة (1-1): الفروقات المنهجية والمؤسسية بين السياسات الدولية والوضع الحالي بمصر (ص 29)"
+                ],
+                figures: [
+                    "رسم تخطيطي (1-1): أبعاد استخلاص التجربة الدولية لسياسات التوطين التنموي"
+                ],
+                data: {
+                    headers: ["التجربة / السياسة", "نموذج التدخل المؤسسي والمكاني", "طريقة التمويل الموجهة", "الدروس المستفادة لمصر"],
+                    rows: [
+                        ["ألمانيا الموحدة", "صندوق التضامن والمساواة لدعم الأقاليم الشرقية الأقل نمواً", "التحويلات المالية المباشرة والخصومات الضريبية", "ضرورة وضع صيغة عادلة لتقسيم الضرائب المحصلة محلياً."],
+                        ["كوريا الجنوبية", "مبادرة (Saemaul Undong) لتنمية وتحديث الريف والقرى", "تمويل حكومي تشاركي يعتمد على مساهمة المجتمع المحلي", "أهمية الربط بين المشروعات القومية وتأهيل قيادات القرية."],
+                        ["فرنسا", "وزارة التماسك الإقليمي وخطط التنمية التعاقدية بين الأقاليم", "عقود تمويلية مشتركة بين الحكومة المركزية والإقليم", "تعزيز العقود التنموية المحلية لإعطاء المحافظات صلاحيات تنموية."]
+                    ]
+                }
+            },
+            {
+                id: 2,
+                title: "خريطة التفاوتات المكانية الديمغرافية في مصر",
+                summary: "يقدم هذا الفصل ملامح الانقسام الديمغرافي بالمحافظات عبر تحليل معدلات النمو السكاني، وتوزيع قوة العمل، ومعدلات البطالة ونسب الإعالة الإجمالية وحقائق تباين مساهمة المرأة في سوق العمل.",
+                type: "charts_demographics",
+                tables: [
+                    "جدول (2-1): معدلات المواليد والوفيات والزيادة الطبيعية بالمحافظات (2024)",
+                    "جدول (2-2): توزيع المشتغلين حسب النشاط الاقتصادي في أقاليم مصر المختلفة"
+                ],
+                figures: [
+                    "شكل (2-1): تباين معدل النمو السكاني بالمحافظات بين عامي 2017 و 2025",
+                    "شكل (2-2): تباين البطالة المسجلة ومساهمة الإناث في قوة العمل"
+                ],
+                chartData: {
+                    labels: ["القاهرة", "الإسكندرية", "الدقهلية", "المنيا", "أسيوط", "البحر الأحمر"],
+                    datasets: [
+                        { label: "معدل الإعالة الكلية (%)", data: [48.5, 49.8, 55.2, 68.4, 72.1, 41.2], color: "rgba(30, 58, 138, 0.85)" },
+                        { label: "معدل البطالة (%)", data: [6.8, 8.2, 7.1, 11.2, 12.5, 4.3], color: "rgba(217, 119, 6, 0.85)" }
+                    ]
+                }
+            },
+            {
+                id: 3,
+                title: "خريطة التفاوتات المكانية الاقتصادية (مستوى المعيشة)",
+                summary: "دراسة مستويات الناتج المحلي الإجمالي وأثره على نصيب الفرد بالمحافظات، وتتبع تباين مصادر الدخل وأنماط الإنفاق السنوية للأسر في ريف وحضر الجمهورية، ورصد الأثر التضخمي الإقليمي.",
+                type: "charts_economic",
+                tables: [
+                    "جدول (3-1): تباين متوسط الدخل السنوي للأسرة حسب مصادر الدخل (ريف وحضر)",
+                    "جدول (3-2): الأرقام القياسية لأسعار المستهلكين بالمجموعات السلعية الرئيسية إقليمياً"
+                ],
+                figures: [
+                    "شكل (3-1): نصيب الفرد المقدر من الناتج المحلي الإجمالي بالمحافظات",
+                    "شكل (3-2): التوزيع النسبي للإنفاق السنوي للأسرة بالريف مقارنة بالحضر"
+                ],
+                chartData: {
+                    labels: ["حضر الجمهورية", "ريف الجمهورية"],
+                    datasets: [
+                        { label: "الدخل من العمل (%)", data: [68.4, 52.1], color: "#1e3a8a" },
+                        { label: "الدخل من التحويلات والمساعدات (%)", data: [15.2, 28.6], color: "#d97706" },
+                        { label: "الدخل من الممتلكات والإيجار (%)", data: [16.4, 19.3], color: "#10b981" }
+                    ]
+                }
+            },
+            {
+                id: 4,
+                title: "خريطة التفاوتات المكانية الاجتماعية في مصر",
+                summary: "تتبع جودة وحق النفاذ للخدمات الصحية والتعليمية وتغطية شبكات الحماية الاجتماعية والفقر متعدد الأبعاد، مع رصد التفاوت الفادح في كثافة الفصول ونسب الأطباء لكل مواطن جغرافياً.",
+                type: "social_indicators",
+                tables: [
+                    "جدول (4-1): مكونات الدليل الوطني للفقر متعدد الأبعاد ومساهمة الأقاليم فيه",
+                    "جدول (4-2): نسب السكان للأطباء البشريين ومتوسط كثافة الفصول بالمحافظات"
+                ],
+                figures: [
+                    "شكل (4-1): درجات المحافظات في تحقيق أهداف الصحة الجيدة والتعليم المتكافئ",
+                    "شكل (4-2): الفقر متعدد الأبعاد ونسب التسرب المدرسي بالإعدادية"
+                ],
+                chartData: {
+                    labels: ["القاهرة", "بورسعيد", "الدقهلية", "سوهاج", "أسيوط", "الوادي الجديد"],
+                    datasets: [
+                        { label: "الأسر لكل سرير مستشفى", data: [380, 210, 560, 920, 890, 180], color: "#ef4444" },
+                        { label: "متوسط كثافة الفصول (طالب/فصل)", data: [42, 31, 48, 52, 54, 22], color: "#3b82f6" }
+                    ]
+                }
+            },
+            {
+                id: 5,
+                title: "العوامل الحاكمة للتفاوتات المكانية (دلالات إحصائية)",
+                summary: "بناء مؤشر مركب شامل ورسم الترتيب الجغرافي للمحافظات استناداً لـ 15 متغيراً ديمغرافياً واقتصادياً واجتماعياً للوقوف على مستوى الحساسية الإحصائية وتوجيه الموارد وصنع القرار الأمثل.",
+                type: "composite_index",
+                tables: [
+                    "جدول (5-1): المتغيرات الـ 15 الفرعية ومصفوفة الأوزان المرجحة لها",
+                    "جدول (5-2): ترتيب المحافظات والسيناريوهات الثلاثة لاختبار الحساسية"
+                ],
+                figures: [
+                    "شكل (5-1): قيم مؤشر البعد الاجتماعي والاقتصادي والديموغرافي التفصيلي",
+                    "شكل (5-2): الإطار الهيكلي المفاهيمي المنهجي المعتمد لبناء المؤشر"
+                ],
+                chartData: {
+                    labels: ["أسيوط", "سوهاج", "المنيا", "الفيوم", "الدقهلية", "الغربية", "الإسكندرية", "القاهرة", "البحر الأحمر", "بورسعيد"],
+                    datasets: [
+                        { label: "قيمة مؤشر الفجوة المكانية المركب (من 0 إلى 1)", data: [0.85, 0.82, 0.78, 0.69, 0.35, 0.32, 0.28, 0.22, 0.18, 0.15], color: "#8b5cf6" }
+                    ]
+                }
+            },
+            {
+                id: 6,
+                title: "نحو رؤية لتحقيق العدالة المكانية (السياسات والتدخلات)",
+                summary: "تقديم خارطة طريق عملية لمتخذ القرار تشمل حزم متكاملة لإصلاح منظومة البيانات والتمويل اللامركزي وتحديث معادلات تخصيص الاستثمارات العامة وتدشين استراتيجيات التوطين التنموي.",
+                type: "policy_matrix",
+                tables: [
+                    "جدول (6-1): محاور السياسات ومصفوفة التدخلات التنفيذية العاجلة والمتوسطة الأجل"
+                ],
+                figures: [
+                    "رسم تخطيطي (6-1): الهيكل التنفيذي المقترح لتنسيق سياسات التماسك الإقليمي"
+                ],
+                data: {
+                    axes: [
+                        { title: "المحور الأول: البيانات وتطوير القياس", desc: "سد فجوة البيانات المحلية والمحافظات، مع إجراء مسوح دورية لـ (الدخل، الإنفاق، الفقر، القوة العاملة) بشكل سنوي وتوسيع قاعدة النشر الجغرافي للبيانات." },
+                        { title: "المحور الثاني: إصلاح التمويل واللامركزية", desc: "تطبيق حقيقي لللامركزية المالية، وتمكين الإدارات المحلية من تجميع وجباية عوائد تنمية المحافظة، وربطها بصيغة لتقسيم الإيرادات المركزية بعدالة مكافئة للفجوات." },
+                        { title: "المحور الثالث: توطين أهداف التنمية المستدامة", desc: "إعادة بناء معادلة توزيع الاستثمارات العامة لتستهدف المحافظات الأكبر فجوة بمؤشر التفاوتات المكانية، والتوسع في حزم (حياة كريمة) مع الاستهداف النوعي المتكامل." }
+                    ]
+                }
+            }
+        ];
+
+        // Global variables to store Chart instances to avoid canvas reuse issues
+        let dashboardChartInstance = null;
+        let chapterChartInstance = null;
+
+        // Navigation Logic
+        function navigate(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Show target page
+            document.getElementById(pageId).classList.add('active');
+
+            // Update nav buttons styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.getAttribute('data-target') === pageId) {
+                    btn.classList.add('bg-white/30', 'border-b-2', 'border-npi-accent');
+                    btn.classList.remove('bg-white/10');
+                } else {
+                    btn.classList.remove('bg-white/30', 'border-b-2', 'border-npi-accent');
+                    btn.classList.add('bg-white/10');
+                }
+            });
+
+            // Trigger chart initialization when navigating to the dashboard page
+            if (pageId === 'dashboard') {
+                setTimeout(updateDashboardCharts, 100);
+            }
+        }
+
+        // Initialize Chapters List
+        function initChapters() {
+            const container = document.getElementById('chapter-buttons-container');
+            container.innerHTML = ''; // Clear previous content if any
+            studyData.forEach(chapter => {
+                const btn = document.createElement('button');
+                btn.className = 'chapter-btn w-full text-right p-4 border-b border-gray-100 hover:bg-blue-50 transition duration-150 flex justify-between items-center';
+                btn.innerHTML = `
+                    <span class="font-bold text-sm md:text-base text-gray-800">الفصل ${chapter.id}: ${chapter.title}</span>
+                    <i class="fa-solid fa-chevron-left text-xs text-gray-400"></i>
+                `;
+                btn.onclick = () => loadChapterData(chapter.id, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        // Update Dashboard Charts based on user selection
+        function updateDashboardCharts() {
+            const selector = document.getElementById('indicatorSelector');
+            const selectedMetric = selector.value;
+            
+            let datasetLabel = "";
+            let datasetColor = "";
+            let metricData = [];
+
+            if (selectedMetric === 'poverty') {
+                datasetLabel = "معدل الفقر المادي (%)";
+                datasetColor = "rgba(239, 68, 68, 0.8)";
+                metricData = dashboardData.poverty;
+            } else if (selectedMetric === 'unemployment') {
+                datasetLabel = "معدل البطالة (%)";
+                datasetColor = "rgba(245, 158, 11, 0.8)";
+                metricData = dashboardData.unemployment;
+            } else if (selectedMetric === 'illiteracy') {
+                datasetLabel = "نسبة الأمية 10 سنوات فأكثر (%)";
+                datasetColor = "rgba(59, 130, 246, 0.8)";
+                metricData = dashboardData.illiteracy;
+            } else if (selectedMetric === 'composite') {
+                datasetLabel = "مؤشر التفاوتات المكانية المركب (كلما زاد زادت الفجوة)";
+                datasetColor = "rgba(139, 92, 246, 0.8)";
+                metricData = dashboardData.composite;
+            }
+
+            const ctx = document.getElementById('dashboardMainChart').getContext('2d');
+
+            // Destroy previous chart if exists
+            if (dashboardChartInstance) {
+                dashboardChartInstance.destroy();
+            }
+
+            dashboardChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dashboardData.governorates,
+                    datasets: [{
+                        label: datasetLabel,
+                        data: metricData,
+                        backgroundColor: datasetColor,
+                        borderColor: datasetColor.replace('0.8', '1'),
+                        borderWidth: 1.5,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: { family: 'Cairo', size: 12 }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: { family: 'Cairo' }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: { family: 'Cairo', weight: 'bold' }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load Specific Chapter Data into Main Area
+        function loadChapterData(id, clickedBtn) {
+            // Update active state in sidebar
+            document.querySelectorAll('.chapter-btn').forEach(b => b.classList.remove('active'));
+            if(clickedBtn) clickedBtn.classList.add('active');
+
+            const chapter = studyData.find(ch => ch.id === id);
+            if(!chapter) return;
+
+            // Update Header
+            document.getElementById('ch-badge').innerText = `الفصل ${chapter.id}`;
+            document.getElementById('ch-title').innerText = chapter.title;
+
+            // Build Basic Content Layout
+            let contentHTML = `
+                <div class="mb-6 bg-white p-6 rounded-xl border border-blue-100 shadow-sm relative overflow-hidden">
+                    <div class="absolute -left-4 -top-4 text-blue-50 opacity-40 text-6xl"><i class="fa-solid fa-quote-left"></i></div>
+                    <h3 class="text-lg font-bold text-npi-dark mb-2 border-b pb-1">موجز التحليل الاستراتيجي لصانع القرار</h3>
+                    <p class="text-gray-700 leading-relaxed text-justify relative z-10 text-sm">${chapter.summary}</p>
+                </div>
+            `;
+
+            // Append Dynamic Components (Charts/Tables) based on Chapter type
+            if (chapter.type === 'comparison_matrix') {
+                contentHTML += `
+                    <div class="mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3 flex items-center text-sm">
+                            <span class="bg-blue-600 text-white w-6 h-6 rounded flex items-center justify-center ml-2 shadow">
+                                <i class="fa-solid fa-table text-xs"></i>
+                            </span>
+                            ${chapter.tables[0]}
+                        </h4>
+                        <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+                            <table class="min-w-full divide-y divide-gray-200 text-right text-xs">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        ${chapter.data.headers.map(h => `<th class="px-4 py-3 font-bold text-gray-700 border-b">${h}</th>`).join('')}
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    ${chapter.data.rows.map(row => `
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-bold text-npi-dark">${row[0]}</td>
+                                            <td class="px-4 py-3 text-gray-600">${row[1]}</td>
+                                            <td class="px-4 py-3 text-gray-600 font-semibold text-blue-800">${row[2]}</td>
+                                            <td class="px-4 py-3 text-gray-700 bg-amber-50/50">${row[3]}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            } else if (chapter.type === 'charts_demographics' || chapter.type === 'charts_economic' || chapter.type === 'social_indicators' || chapter.type === 'composite_index') {
+                // Visual Render Container for dynamic charts
+                contentHTML += `
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- Chart Area -->
+                        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                            <h4 class="font-bold text-gray-800 mb-3 flex items-center text-sm">
+                                <span class="bg-amber-600 text-white w-6 h-6 rounded flex items-center justify-center ml-2 shadow">
+                                    <i class="fa-solid fa-chart-line text-xs"></i>
+                                </span>
+                                ${chapter.figures[0]}
+                            </h4>
+                            <div class="relative h-64 w-full">
+                                <canvas id="chapterChartCanvas"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Accompanying Table -->
+                        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm overflow-x-auto">
+                            <h4 class="font-bold text-gray-800 mb-3 flex items-center text-sm">
+                                <span class="bg-blue-600 text-white w-6 h-6 rounded flex items-center justify-center ml-2 shadow">
+                                    <i class="fa-solid fa-table text-xs"></i>
+                                </span>
+                                ${chapter.tables[0]}
+                            </h4>
+                            <table class="min-w-full divide-y divide-gray-200 text-right text-2xs md:text-xs">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-3 py-2 font-bold text-gray-700">المحافظة / الإقليم</th>
+                                        ${chapter.chartData.datasets.map(d => `<th class="px-3 py-2 font-bold text-gray-700">${d.label}</th>`).join('')}
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    ${chapter.chartData.labels.map((label, index) => `
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-3 py-2 font-bold text-gray-800">${label}</td>
+                                            ${chapter.chartData.datasets.map(d => `<td class="px-3 py-2 font-semibold text-npi-light">${d.data[index]}</td>`).join('')}
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            } else if (chapter.type === 'policy_matrix') {
+                contentHTML += `
+                    <div class="mb-6">
+                        <h4 class="font-bold text-gray-800 mb-3 flex items-center text-sm">
+                            <span class="bg-emerald-600 text-white w-6 h-6 rounded flex items-center justify-center ml-2 shadow">
+                                <i class="fa-solid fa-road text-xs"></i>
+                            </span>
+                            ${chapter.tables[0]}
+                        </h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            ${chapter.data.axes.map((axis, idx) => `
+                                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between">
+                                    <div>
+                                        <span class="text-2xs bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-full mb-2 inline-block">محور رئيسي ${idx+1}</span>
+                                        <h5 class="font-bold text-gray-800 mb-2">${axis.title}</h5>
+                                        <p class="text-xs text-gray-600 leading-relaxed text-justify">${axis.desc}</p>
+                                    </div>
+                                    <div class="mt-4 pt-3 border-t border-gray-100 text-2xs text-gray-400 flex justify-between items-center">
+                                        <span>الأولوية: عاجلة قصوى</span>
+                                        <i class="fa-solid fa-arrow-left text-emerald-500"></i>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // List remaining tables/figures in this chapter for reference
+            if (chapter.tables.length > 1 || chapter.figures.length > 1) {
+                contentHTML += `<div class="mt-4 pt-4 border-t border-gray-200">
+                    <h5 class="text-xs font-bold text-gray-500 mb-2">قائمة الأشكال والجداول البيانية الإضافية في هذا الفصل بالدراسة الورقية:</h5>
+                    <ul class="space-y-1">
+                `;
+                
+                chapter.tables.slice(1).forEach(tab => {
+                    contentHTML += `<li class="text-2xs text-gray-600 flex items-center"><i class="fa-solid fa-table text-blue-500 ml-1.5"></i> ${tab}</li>`;
+                });
+
+                chapter.figures.slice(1).forEach(fig => {
+                    contentHTML += `<li class="text-2xs text-gray-600 flex items-center"><i class="fa-solid fa-chart-bar text-amber-500 ml-1.5"></i> ${fig}</li>`;
+                });
+
+                contentHTML += `</ul></div>`;
+            }
+
+            // Write HTML content
+            document.getElementById('ch-content').innerHTML = contentHTML;
+
+            // If the chapter requires rendering custom Chart.js charts:
+            if (chapter.type === 'charts_demographics' || chapter.type === 'charts_economic' || chapter.type === 'social_indicators' || chapter.type === 'composite_index') {
+                setTimeout(() => {
+                    const canvasElement = document.getElementById('chapterChartCanvas');
+                    if (!canvasElement) return;
+                    
+                    const ctx = canvasElement.getContext('2d');
+                    
+                    if (chapterChartInstance) {
+                        chapterChartInstance.destroy();
+                    }
+
+                    const datasetsFormatted = chapter.chartData.datasets.map(d => ({
+                        label: d.label,
+                        data: d.data,
+                        backgroundColor: d.color,
+                        borderColor: d.color,
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }));
+
+                    chapterChartInstance = new Chart(ctx, {
+                        type: chapter.type === 'composite_index' ? 'bar' : 'bar',
+                        data: {
+                            labels: chapter.chartData.labels,
+                            datasets: datasetsFormatted
+                        },
+                        options: {
+                            indexAxis: chapter.type === 'composite_index' ? 'y' : 'x', // Horizontal rendering for rankings
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    labels: { font: { family: 'Cairo', size: 10 } }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: { font: { family: 'Cairo', size: 10 } }
+                                },
+                                x: {
+                                    ticks: { font: { family: 'Cairo', size: 10, weight: 'bold' } }
+                                }
+                            }
+                        }
+                    });
+                }, 100);
+            }
+        }
+
+        // Run on load
+        window.onload = () => {
+            navigate('home'); // Load default home page
+            initChapters(); // Load chapter index in sidebar
+        };
+    </script>
+</body>
+</html>

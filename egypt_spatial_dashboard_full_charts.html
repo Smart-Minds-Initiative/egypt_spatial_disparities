@@ -1,0 +1,447 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.db{font-family:'Segoe UI',Tahoma,Arial,sans-serif;direction:rtl;padding:0 0 2rem}
+.hdr{background:#1a3a5c;color:#fff;padding:1rem 1.5rem;border-radius:var(--border-radius-lg);margin-bottom:1rem}
+.hdr h1{font-size:17px;font-weight:500;margin-bottom:3px}
+.hdr p{font-size:12px;opacity:.75}
+.tabs{display:flex;gap:5px;margin-bottom:1rem;flex-wrap:wrap}
+.tab{padding:6px 12px;border-radius:var(--border-radius-md);font-size:12px;cursor:pointer;border:.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:all .15s}
+.tab.on{background:#1a3a5c;color:#fff;border-color:#1a3a5c}
+.sec{display:none}
+.sec.on{display:block}
+.card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:.9rem 1.1rem;margin-bottom:.9rem}
+.ct{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:.75rem;padding-bottom:6px;border-bottom:.5px solid var(--color-border-tertiary)}
+.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:.9rem}
+.kpi{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.75rem .9rem}
+.kl{font-size:11px;color:var(--color-text-secondary);margin-bottom:3px}
+.kv{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.ks{font-size:10px;color:var(--color-text-tertiary);margin-top:2px}
+.cw{position:relative;width:100%}
+.note{font-size:11px;color:var(--color-text-tertiary);margin-top:4px;text-align:left}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+@media(max-width:500px){.row2{grid-template-columns:1fr}}
+</style>
+<div class="db">
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden">لوحة التفاوتات المكانية المصرية - بيانات من الدراسة</h2>
+<div class="hdr">
+  <h1>التفاوتات المكانية بين المحافظات المصرية — الأشكال البيانية والبيانات التفصيلية</h1>
+  <p>معهد التخطيط القومي، سلسلة قضايا التخطيط والتنمية رقم 373، 2026</p>
+</div>
+<div class="tabs">
+  <div class="tab on" onclick="sw('demo')">ديموغرافيا وسكان</div>
+  <div class="tab" onclick="sw('labor')">القوى العاملة</div>
+  <div class="tab" onclick="sw('econ')">الاقتصاد والدخل</div>
+  <div class="tab" onclick="sw('gdp')">الناتج المحلي</div>
+  <div class="tab" onclick="sw('edu')">تعليم وحماية</div>
+  <div class="tab" onclick="sw('index')">المؤشر المركب</div>
+</div>
+
+<!-- TAB 1: DEMOGRAPHICS -->
+<div id="s-demo" class="sec on">
+  <div class="kgrid">
+    <div class="kpi"><div class="kl">إجمالي السكان 2025</div><div class="kv">107م+</div><div class="ks">نسمة</div></div>
+    <div class="kpi"><div class="kl">أعلى نمو سكاني</div><div class="kv">مطروح</div><div class="ks">3.8% سنوياً</div></div>
+    <div class="kpi"><div class="kl">أدنى نمو سكاني</div><div class="kv">القاهرة</div><div class="ks">1.1% سنوياً</div></div>
+    <div class="kpi"><div class="kl">نسبة التحضر</div><div class="kv">42.8%</div><div class="ks">2025</div></div>
+    <div class="kpi"><div class="kl">أعلى كثافة صافية</div><div class="kv">القليوبية</div><div class="ks">5,976 نسمة/كم²</div></div>
+  </div>
+  <div class="card">
+    <div class="ct">معدل النمو السكاني بالمحافظات 2017–2025 (%)</div>
+    <div class="cw" style="height:200px"><canvas id="growthC" role="img" aria-label="معدل النمو السكاني بالمحافظات">بيانات النمو</canvas></div>
+  </div>
+  <div class="row2">
+    <div class="card">
+      <div class="ct">معدل المواليد لكل ألف نسمة — 2024</div>
+      <div class="cw" style="height:240px"><canvas id="birthC" role="img" aria-label="معدلات المواليد">بيانات المواليد</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">معدل الزيادة الطبيعية لكل ألف نسمة — 2024</div>
+      <div class="cw" style="height:240px"><canvas id="natC" role="img" aria-label="الزيادة الطبيعية">بيانات الزيادة الطبيعية</canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">الكثافة السكانية بالمساحة المأهولة — 2025 (نسمة/كم²)</div>
+    <div class="cw" style="height:200px"><canvas id="densC" role="img" aria-label="الكثافة السكانية">بيانات الكثافة</canvas></div>
+  </div>
+  <div class="card">
+    <div class="ct">معدل الإعالة الكلية بالمحافظات — 2017 (%)</div>
+    <div class="cw" style="height:190px"><canvas id="depC" role="img" aria-label="معدل الإعالة">بيانات الإعالة</canvas></div>
+  </div>
+</div>
+
+<!-- TAB 2: LABOR -->
+<div id="s-labor" class="sec">
+  <div class="card">
+    <div class="ct">نسبة البطالة الإجمالية بالمحافظات — 2023 (%)</div>
+    <div class="cw" style="height:210px"><canvas id="unempC" role="img" aria-label="نسبة البطالة">بيانات البطالة</canvas></div>
+  </div>
+  <div class="row2">
+    <div class="card">
+      <div class="ct">نسبة مساهمة الإناث في قوة العمل (%)</div>
+      <div class="cw" style="height:260px"><canvas id="femC" role="img" aria-label="مساهمة الإناث">بيانات الإناث</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">توزيع المشتغلين حسب القطاع — الجمهورية</div>
+      <div class="cw" style="height:260px"><canvas id="sectC" role="img" aria-label="توزيع المشتغلين">بيانات القطاعات</canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">توزيع المشتغلين: أنشطة أولية / ثانوية / ثلاثية (%) — 2024</div>
+    <div class="cw" style="height:200px"><canvas id="laborSectC" role="img" aria-label="قطاعات العمل">بيانات قطاعات العمل</canvas></div>
+  </div>
+</div>
+
+<!-- TAB 3: ECONOMY / INCOME -->
+<div id="s-econ" class="sec">
+  <div class="kgrid">
+    <div class="kpi"><div class="kl">متوسط دخل الأسرة 2021/22</div><div class="kv">81,467</div><div class="ks">جنيه سنوياً</div></div>
+    <div class="kpi"><div class="kl">أعلى دخل أسرة</div><div class="kv">بورسعيد</div><div class="ks">114,504 جنيه</div></div>
+    <div class="kpi"><div class="kl">أدنى دخل أسرة</div><div class="kv">الأقصر</div><div class="ks">66,391 جنيه</div></div>
+    <div class="kpi"><div class="kl">فجوة الحضر/الريف</div><div class="kv">1.27×</div><div class="ks">دخل حضر أعلى</div></div>
+  </div>
+  <div class="card">
+    <div class="ct">الدخل السنوي للأسرة مقارنة بمتوسط الجمهورية (%) — 2021/2022</div>
+    <div class="cw" style="height:210px"><canvas id="incC" role="img" aria-label="الدخل السنوي">بيانات الدخل</canvas></div>
+    <div class="note">الخط الأحمر = متوسط الجمهورية (100%). البيانات: الجهاز المركزي للتعبئة العامة والإحصاء</div>
+  </div>
+  <div class="card">
+    <div class="ct">مصادر دخل الأسرة — حضر مقابل ريف (2021/22)</div>
+    <div class="cw" style="height:230px"><canvas id="incSrcC" role="img" aria-label="مصادر الدخل">بيانات المصادر</canvas></div>
+  </div>
+  <div class="row2">
+    <div class="card">
+      <div class="ct">مساهمة دخل العمل في دخل الأسرة (%) — 2022</div>
+      <div class="cw" style="height:260px"><canvas id="workIncC" role="img" aria-label="دخل العمل">دخل العمل</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">نسبة الفقر بالمحافظات (%) — 2019/2020</div>
+      <div class="cw" style="height:260px"><canvas id="povC" role="img" aria-label="نسبة الفقر">نسب الفقر</canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: GDP -->
+<div id="s-gdp" class="sec">
+  <div class="card">
+    <div class="ct">نصيب الفرد من الناتج المحلي الإجمالي بالمحافظات — 2023/2024 (ألف جنيه)</div>
+    <div class="cw" style="height:220px"><canvas id="gdpC" role="img" aria-label="نصيب الفرد من الناتج">بيانات الناتج</canvas></div>
+  </div>
+  <div class="card">
+    <div class="ct">التوزيع النسبي للناتج حسب الأنشطة الاقتصادية 2019–2025 (%)</div>
+    <div class="cw" style="height:230px"><canvas id="gdpActC" role="img" aria-label="الناتج حسب القطاعات">بيانات القطاعات</canvas></div>
+  </div>
+  <div class="card">
+    <div class="ct">معدل نمو الناتج المحلي حسب الأنشطة — متوسط الفترة (%)</div>
+    <div class="cw" style="height:200px"><canvas id="gdpGrC" role="img" aria-label="معدل النمو">معدل النمو</canvas></div>
+  </div>
+</div>
+
+<!-- TAB 5: EDUCATION -->
+<div id="s-edu" class="sec">
+  <div class="row2">
+    <div class="card">
+      <div class="ct">كثافة الفصل الابتدائي (طالب/فصل) — 2023/2024</div>
+      <div class="cw" style="height:280px"><canvas id="classC" role="img" aria-label="كثافة الفصول">كثافة الفصول</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">نسبة الأمية الإجمالية (%) — 2023/2024</div>
+      <div class="cw" style="height:280px"><canvas id="illtC" role="img" aria-label="نسبة الأمية">نسب الأمية</canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">التوزيع حسب الحالة التعليمية للسكان — 2017 (%)</div>
+    <div class="cw" style="height:210px"><canvas id="eduStackC" role="img" aria-label="الحالة التعليمية">التوزيع التعليمي</canvas></div>
+  </div>
+  <div class="card">
+    <div class="ct">نسبة الانتشار الأنيميا بين الإناث 5–19 سنة حسب الإقليم (%)</div>
+    <div class="cw" style="height:160px"><canvas id="anemC" role="img" aria-label="الأنيميا">بيانات الأنيميا</canvas></div>
+  </div>
+</div>
+
+<!-- TAB 6: COMPOSITE INDEX -->
+<div id="s-index" class="sec">
+  <div class="card">
+    <div class="ct">المؤشر المركب للتفاوتات المكانية — قيم الأبعاد الثلاثة لكل محافظة</div>
+    <div class="cw" style="height:380px"><canvas id="idxC" role="img" aria-label="المؤشر المركب">بيانات المؤشر</canvas></div>
+  </div>
+  <div class="row2">
+    <div class="card">
+      <div class="ct">قيم البعد الاقتصادي</div>
+      <div class="cw" style="height:300px"><canvas id="econDimC" role="img" aria-label="البعد الاقتصادي">البعد الاقتصادي</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">قيم البعد الاجتماعي</div>
+      <div class="cw" style="height:300px"><canvas id="socDimC" role="img" aria-label="البعد الاجتماعي">البعد الاجتماعي</canvas></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function sw(name){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('s-'+name).classList.add('on');
+  event.currentTarget.classList.add('on');
+}
+
+const dk=matchMedia('(prefers-color-scheme:dark)').matches;
+const tc=dk?'#ccc':'#444';
+const gc=dk?'rgba(255,255,255,.07)':'rgba(0,0,0,.06)';
+
+const govs=['القاهرة','الإسكندرية','بورسعيد','السويس','دمياط','الدقهلية','الشرقية','القليوبية','كفرالشيخ','الغربية','المنوفية','البحيرة','الإسماعيلية','الجيزة','بني سويف','الفيوم','المنيا','أسيوط','سوهاج','قنا','الأقصر','أسوان'];
+
+// === GROWTH ===
+new Chart(document.getElementById('growthC'),{type:'bar',data:{
+  labels:['القاهرة','الإسكندرية','دمياط','بورسعيد','السويس','الغربية','البحيرة','الدقهلية','المنوفية','الشرقية','الجيزة','كفرالشيخ','القليوبية','الإسماعيلية','أسوان','الأقصر','بني سويف','الفيوم','المنيا','أسيوط','سوهاج','قنا','مطروح'],
+  datasets:[{label:'معدل النمو %',data:[1.1,1.1,1.1,1.3,1.4,1.5,1.7,1.8,1.9,2.0,2.1,2.1,2.1,2.2,2.2,2.3,2.4,2.5,2.7,2.8,2.9,3.0,3.8],
+    backgroundColor:d=>d.raw>=3?'#e24b4a':d.raw>=2.5?'#ef9f27':'#378add',
+    borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:tc,font:{size:10}},grid:{color:gc}},y:{ticks:{color:tc,font:{size:10}},grid:{color:gc}}}}
+});
+
+// === BIRTHS ===
+const bLabels=['بورسعيد','القاهرة','الإسكندرية','السويس','دمياط','الغربية','المنوفية','الدقهلية','كفرالشيخ','الشرقية','القليوبية','البحيرة','الإسماعيلية','أسوان','الجيزة','الأقصر','الفيوم','بني سويف','قنا','المنيا','سوهاج','أسيوط','مطروح'];
+const bVals=[11.8,16.7,15.4,15.5,14.3,15,16.8,15,16.7,17,16.1,18,18.5,20.7,19.1,21,19.4,20.7,21.9,22.3,23.7,23.8,39.2];
+new Chart(document.getElementById('birthC'),{type:'bar',data:{
+  labels:bLabels,datasets:[{label:'المواليد/ألف',data:bVals,backgroundColor:bVals.map(v=>v>25?'#e24b4a':v>20?'#ef9f27':'#378add'),borderWidth:0}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:tc,font:{size:9}},grid:{color:gc}},y:{ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+});
+
+// === NATURAL INCREASE ===
+const niLabels=['بورسعيد','الغربية','الإسكندرية','القاهرة','السويس','دمياط','الدقهلية','المنوفية','كفرالشيخ','الشرقية','القليوبية','البحيرة','الإسماعيلية','الجيزة','أسوان','الأقصر','الفيوم','بني سويف','قنا','المنيا','سوهاج','أسيوط','مطروح'];
+const niVals=[5.5,9.2,8.0,9.0,9.9,8.3,9.4,11.7,11.4,11.9,10.2,12.8,12.8,13.2,14.5,15.8,14.6,16,16.3,17.5,18.5,18.5,34.2];
+new Chart(document.getElementById('natC'),{type:'bar',data:{
+  labels:niLabels,datasets:[{label:'الزيادة الطبيعية/ألف',data:niVals,backgroundColor:niVals.map(v=>v>20?'#e24b4a':v>15?'#ef9f27':'#1d9e75'),borderWidth:0}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:tc,font:{size:9}},grid:{color:gc}},y:{ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+});
+
+// === DENSITY ===
+new Chart(document.getElementById('densC'),{type:'bar',data:{
+  labels:['جنوب سيناء','الوادي الجديد','البحرالأحمر','مطروح','شمال سيناء','السويس','أسوان','الأقصر','بورسعيد','الإسماعيلية','الفيوم','أسيوط','المنيا','سوهاج','قنا','بني سويف','دمياط','الشرقية','البحيرة','الدقهلية','كفرالشيخ','الغربية','المنوفية','الجيزة','الإسكندرية','القاهرة','القليوبية'],
+  datasets:[{label:'نسمة/كم²',data:[22.4,90,150,180,200,220,580,900,1100,1200,1400,2523,1700,1800,1900,1950,2100,2200,2300,2400,2500,2837,2700,2800,3221,5395,5976],backgroundColor:'#378add',borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:tc,font:{size:9},maxRotation:45},grid:{color:gc}},y:{ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+});
+
+// === DEPENDENCY ===
+const depLabels=['القاهرة','بورسعيد','الفيوم','اإلسكندرية','السويس','أسوان','الأقصر','البحيرة','دمياط','الغربية','المنوفية','القليوبية','كفرالشيخ','الشرقية','الإسماعيلية','الجيزة','قنا','أسيوط','الدقهلية','المنيا','سوهاج','بني سويف','شمال سيناء','مطروح'];
+const depVals=[46.4,49.8,53.3,52.3,56.9,60.0,57.1,63.2,60.8,58.2,63.4,59.8,61.8,64.3,63.9,61.5,65.5,67.7,62.0,70.0,71.2,72.3,71.1,75.9];
+new Chart(document.getElementById('depC'),{type:'bar',data:{
+  labels:depLabels,datasets:[{label:'معدل الإعالة الكلية %',data:depVals,backgroundColor:depVals.map(v=>v>70?'#e24b4a':v>65?'#ef9f27':'#378add'),borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:tc,font:{size:9},maxRotation:45},grid:{color:gc}},y:{min:40,ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+});
+
+// === UNEMPLOYMENT ===
+const uLabels=['الدقهلية','قنا','الشرقية','الفيوم','أسيوط','بني سويف','كفرالشيخ','المنوفية','البحيرة','دمياط','المنيا','الغربية','الأقصر','أسوان','القليوبية','القاهرة','الجيزة','الإسكندرية','سوهاج','الإسماعيلية','السويس','البحرالأحمر','بورسعيد','جنوب سيناء'];
+const uVals=[2.1,1.4,4.5,3.3,3.0,3.8,4.6,4.9,5.7,7.5,5.5,9.7,11.8,6.3,9.8,10.5,9.9,9.1,6.8,12.8,13.1,18.1,26.5,22.4];
+new Chart(document.getElementById('unempC'),{type:'bar',data:{
+  labels:uLabels,datasets:[{label:'البطالة %',data:uVals,backgroundColor:uVals.map(v=>v>15?'#e24b4a':v>10?'#ef9f27':'#378add'),borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:tc,font:{size:9},maxRotation:45},grid:{color:gc}},y:{ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+});
+
+// === FEMALE LABOR ===
+const fLabels=['سوهاج','مطروح','قنا','أسيوط','الأقصر','الفيوم','الجيزة','المنيا','بورسعيد','الإسماعيلية','الدقهلية','أسوان','البحيرة','الشرقية','بني سويف','السويس','القاهرة','الإسكندرية','الوادي الجديد','دمياط','القليوبية','كفرالشيخ','المنوفية','الغربية'];
+const fVals=[5.9,6.3,6.1,10.9,11.6,12.1,14.6,21.0,31.8,22.0,16.9,15.5,16.6,15.4,26.3,25.3,23.0,21.2,21.0,19.8,21.9,21.4,26.6,25.1];
+new Chart(document.getElementById('femC'),{type:'bar',data:{
+  labels:fLabels,datasets:[{label:'مساهمة الإناث %',data:fVals,backgroundColor:fVals.map(v=>v<10?'#e24b4a':v<20?'#ef9f27':'#1d9e75'),borderWidth:0}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:tc,font:{size:9}},grid:{color:gc}},y:{ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+});
+
+// === SECTOR PIE ===
+new Chart(document.getElementById('sectC'),{type:'doughnut',data:{
+  labels:['أنشطة ثلاثية (خدمات)','أنشطة ثانوية (صناعة/بناء)','أنشطة أولية (زراعة/صيد)'],
+  datasets:[{data:[54.3,26.9,18.7],backgroundColor:['#378add','#1d9e75','#ef9f27'],borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:tc,font:{size:10},boxWidth:10}}}}
+});
+
+// === LABOR SECTOR STACKED ===
+const lsLabels=['جنوب سيناء','القاهرة','الإسكندرية','البحرالأحمر','بورسعيد','السويس','الوادي الجديد','مطروح','الجيزة','القليوبية','الغربية','الإسماعيلية','الدقهلية','المنوفية','أسيوط','سوهاج','الشرقية','دمياط','أسوان','قنا','الأقصر','المنيا','بني سويف','الفيوم','كفرالشيخ'];
+const lsPrim=[7.3,0.3,0.9,3.1,1.2,1.7,25.8,11.7,5.9,5.6,13.9,17.1,24.4,23.2,18.5,22.8,20.5,11.8,23.5,31.3,31.2,35.4,32.6,26.1,40.7];
+const lsSec=[12.3,27.4,25.4,18.8,21.7,33.9,10.5,23.9,31.7,33.9,27.3,25.6,23.3,25.4,35.4,28.6,30.0,33.4,28.3,28.5,19.3,23.9,26.6,31.4,15.5];
+const lsTert=lsPrim.map((v,i)=>100-v-lsSec[i]);
+new Chart(document.getElementById('laborSectC'),{type:'bar',data:{
+  labels:lsLabels,datasets:[
+    {label:'أولية',data:lsPrim,backgroundColor:'#ef9f27',borderWidth:0},
+    {label:'ثانوية',data:lsSec,backgroundColor:'#1d9e75',borderWidth:0},
+    {label:'ثلاثية',data:lsTert,backgroundColor:'#378add',borderWidth:0}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:tc,font:{size:10},boxWidth:10}}},
+    scales:{x:{stacked:true,ticks:{color:tc,font:{size:9},maxRotation:45},grid:{color:gc}},y:{stacked:true,ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+});
+
+// === INCOME VS NATIONAL ===
+const iLabels=['بورسعيد','القاهرة','الإسكندرية','السويس','الجيزة','الإسماعيلية','كفرالشيخ','الشرقية','الفيوم','الغربية','قنا','دمياط','أسوان','المنوفية','بني سويف','المنيا','سوهاج','الدقهلية','البحيرة','القليوبية','أسيوط','الأقصر'];
+const iVals=[140.5,123.9,122.7,108.9,99.3,95.4,93.9,93.6,92.2,92.1,91.7,89.6,89.3,89.2,88.6,87.8,86.8,86.4,85.0,83.7,83.2,81.5];
+new Chart(document.getElementById('incC'),{type:'bar',data:{
+  labels:iLabels,datasets:[{label:'% من متوسط الجمهورية',data:iVals,backgroundColor:iVals.map(v=>v>=100?'#1d9e75':v>=90?'#ef9f27':'#e24b4a'),borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},annotation:{annotations:{line1:{type:'line',yMin:100,yMax:100,borderColor:'#e24b4a',borderWidth:1.5,borderDash:[4,3]}}}},
+    scales:{x:{ticks:{color:tc,font:{size:9},maxRotation:45},grid:{color:gc}},y:{min:70,ticks:{color:tc,font:{size:9},callback:v=>v+'%'},grid:{color:gc}}}}
+});
+
+// === INCOME SOURCES ===
+new Chart(document.getElementById('incSrcC'),{type:'bar',data:{
+  labels:['دخل العمل بأجر','مشروعات زراعية','مشروعات غير زراعية','دخل الممتلكات','القيمة الإيجارية','تحويلات نقدية','تحويلات سلعية'],
+  datasets:[
+    {label:'حضر',data:[46.7,1.5,15.2,4.2,10.0,18.5,3.8],backgroundColor:'#378add',borderWidth:0},
+    {label:'ريف',data:[40.9,11.4,14.9,2.1,8.4,17.2,5.1],backgroundColor:'#1d9e75',borderWidth:0}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:tc,font:{size:10},boxWidth:10}}},
+    scales:{x:{ticks:{color:tc,font:{size:10},maxRotation:20},grid:{color:gc}},y:{ticks:{color:tc,font:{size:10},callback:v=>v+'%'},grid:{color:gc}}}}
+});
+
+// === WORK INCOME SHARE ===
+const wiLabels=['بورسعيد','سوهاج','الغربية','قنا','أسيوط','البحيرة','بني سويف','الأقصر','أسوان','كفرالشيخ','الجيزة','الفيوم','الشرقية','الدقهلية','المنوفية','المنيا','الإسكندرية','الإسماعيلية','السويس','القليوبية','القاهرة','دمياط'];
+const wiVals=[55.5,56.3,59.8,60.0,61.9,62.1,62.2,62.9,63.1,63.9,64.8,65.2,65.3,65.7,65.9,68.4,68.8,68.8,68.9,69.8,70.0,72.7];
+new Chart(document.getElementById('workIncC'),{type:'bar',data:{
+  labels:wiLabels,datasets:[{label:'% دخل العمل',data:wiVals,backgroundColor:'#378add',borderWidth:0}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{min:50,ticks:{color:tc,font:{size:9}},grid:{color:gc}},y:{ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+});
+
+// === POVERTY ===
+const povLabels=['القاهرة','بورسعيد','السويس','الإسكندرية','الإسماعيلية','دمياط','المنوفية','أسوان','كفرالشيخ','الغربية','البحيرة','الشرقية','الدقهلية','الأقصر','القليوبية','بني سويف','المنيا','الفيوم','سوهاج','قنا','أسيوط'];
+const povVals=[8.1,10.9,11.4,13.4,18.3,20.2,21.1,22.4,25.5,25.8,30.3,30.8,31.1,33.5,34.9,35.7,40.9,37.9,43.9,38.1,57.7];
+new Chart(document.getElementById('povC'),{type:'bar',data:{
+  labels:povLabels,datasets:[{label:'نسبة الفقر %',data:povVals,backgroundColor:povVals.map(v=>v>40?'#e24b4a':v>30?'#ef9f27':'#378add'),borderWidth:0}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:tc,font:{size:9}},grid:{color:gc}},y:{ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+});
+
+// === GDP PER CAPITA ===
+const gdpGovs=['أسيوط','سوهاج','المنيا','بني سويف','قنا','الأقصر','الفيوم','المنوفية','كفرالشيخ','البحيرة','الدقهلية','الشرقية','الغربية','أسوان','القليوبية','المنيا2','البحيرة2','دمياط','اإلسماعيلية','الوادي الجديد','الجيزة','الإسكندرية','شمال سيناء','القاهرة','السويس','البحرالأحمر','مطروح','بورسعيد'];
+const gdpPc=[38.3,41.5,44.5,48.5,50.3,56.8,64.6,66.2,66.9,75.0,83.4,83.9,86.3,109.0,111.4,118.5,124.9,138.5,155.3,203.0,205.5,295.0,361.5,391.2,447.1,486.0,486,1195.5];
+const gdpLabs=['أسيوط','سوهاج','المنيا','بني سويف','قنا','الأقصر','الفيوم','المنوفية','كفرالشيخ','البحيرة','الدقهلية','الشرقية','الغربية','أسوان','القليوبية','الإسماعيلية','دمياط','الوادي الجديد','الجيزة','الإسكندرية','شمال سيناء','القاهرة','السويس','البحرالأحمر','مطروح','بورسعيد','جنوب سيناء'];
+const gdpPcVals=[38.3,41.5,44.5,48.5,50.3,56.8,64.6,66.2,66.9,75.0,83.4,83.9,86.3,109.0,111.4,155.3,138.5,203.0,205.5,295.0,361.5,391.2,447.1,486.0,486,1195.5,447];
+new Chart(document.getElementById('gdpC'),{type:'bar',data:{
+  labels:gdpLabs,datasets:[{label:'ألف جنيه',data:gdpPcVals,backgroundColor:gdpPcVals.map(v=>v>300?'#1d9e75':v>123?'#378add':v>80?'#ef9f27':'#e24b4a'),borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:tc,font:{size:9},maxRotation:45},grid:{color:gc}},y:{ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+});
+
+// === GDP BY ACTIVITY LINE ===
+new Chart(document.getElementById('gdpActC'),{type:'line',data:{
+  labels:['2020/19','2021/20','2022/21','2023/22','2024/23','2025/24'],
+  datasets:[
+    {label:'زراعة وصيد',data:[11.7,12.0,11.5,11.2,14.4,17.3],borderColor:'#1d9e75',backgroundColor:'transparent',tension:.3,pointRadius:3},
+    {label:'صناعات تحويلية',data:[17.1,16.3,16.8,15.9,14.6,15.1],borderColor:'#378add',backgroundColor:'transparent',tension:.3,pointRadius:3},
+    {label:'تشييد وعقارات',data:[18.4,19.0,18.6,18.5,18.6,17.5],borderColor:'#ef9f27',backgroundColor:'transparent',tension:.3,pointRadius:3},
+    {label:'تجارة',data:[14.0,14.4,13.9,14.0,14.4,13.7],borderColor:'#d4537e',backgroundColor:'transparent',tension:.3,pointRadius:3},
+    {label:'خدمات أخرى',data:[20.0,19.8,19.7,19.7,19.1,18.8],borderColor:'#888',backgroundColor:'transparent',tension:.3,borderDash:[4,3],pointRadius:3}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:tc,font:{size:10},boxWidth:10}}},
+    scales:{x:{ticks:{color:tc,font:{size:10}},grid:{color:gc}},y:{ticks:{color:tc,font:{size:10},callback:v=>v+'%'},grid:{color:gc}}}}
+});
+
+// === GDP GROWTH ===
+new Chart(document.getElementById('gdpGrC'),{type:'bar',data:{
+  labels:['زراعة وصيد','تعدين وبترول','صناعات تحويلية','كهرباء ومياه','تشييد وعقارات','نقل واتصالات','تجارة','خدمات'],
+  datasets:[{label:'متوسط النمو %',data:[3.64,-2.55,1.15,3.41,4.41,6.05,4.47,5.91],backgroundColor:[3.64,-2.55,1.15,3.41,4.41,6.05,4.47,5.91].map(v=>v<0?'#e24b4a':v<3?'#ef9f27':'#1d9e75'),borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:tc,font:{size:10},maxRotation:20},grid:{color:gc}},y:{ticks:{color:tc,font:{size:10},callback:v=>v+'%'},grid:{color:gc}}}}
+});
+
+// === CLASS SIZE ===
+const clsLabels=['جنوب سيناء','الوادي الجديد','شمال سيناء','البحرالأحمر','الأقصر','أسوان','بورسعيد','القاهرة','دمياط','مطروح','الإسماعيلية','الشرقية','السويس','الغربية','الدقهلية','الإسكندرية','كفرالشيخ','المنوفية','البحيرة','قنا','سوهاج','أسوان2','الفيوم','بني سويف','القليوبية','المنيا','أسيوط'];
+const clsVals=[25,29,33,41,43,44,41,46,45,42,46,45,46,51,51,50,50,50,52,51,52,40,52,53,55,55,56];
+const clsL=['جنوب سيناء','الوادي الجديد','شمال سيناء','البحرالأحمر','الأقصر','أسوان','بورسعيد','القاهرة','دمياط','مطروح','الإسماعيلية','الشرقية','السويس','الغربية','الدقهلية','الإسكندرية','كفرالشيخ','المنوفية','البحيرة','قنا','سوهاج','الفيوم','بني سويف','القليوبية','المنيا','أسيوط'];
+const clsV2=[25,29,33,41,43,44,41,46,45,42,46,45,46,51,51,50,50,50,52,51,52,52,53,55,55,56];
+new Chart(document.getElementById('classC'),{type:'bar',data:{
+  labels:clsL,datasets:[{label:'طالب/فصل',data:clsV2,backgroundColor:clsV2.map(v=>v>=55?'#e24b4a':v>=50?'#ef9f27':'#378add'),borderWidth:0}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{min:0,ticks:{color:tc,font:{size:9}},grid:{color:gc}},y:{ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+});
+
+// === ILLITERACY ===
+const ilLabels=['جنوب سيناء','الوادي الجديد','بورسعيد','السويس','البحرالأحمر','الإسماعيلية','المنوفية','القاهرة','أسوان','الغربية','الأقصر','الإسكندرية','دمياط','الدقهلية','كفرالشيخ','شمال سيناء','الشرقية','القليوبية','البحيرة','الجيزة','مطروح','الفيوم','سوهاج','قنا','بني سويف','أسيوط','المنيا'];
+const ilVals=[2.2,6.5,11.6,11.7,7.1,10.9,11.2,14.5,13.9,14.4,19.4,17.7,15.1,16.9,20.7,15.6,19.8,18.5,26.9,21.6,21.1,27.5,22.0,22.5,15.7,28.1,28.4];
+new Chart(document.getElementById('illtC'),{type:'bar',data:{
+  labels:ilLabels,datasets:[{label:'نسبة الأمية %',data:ilVals,backgroundColor:ilVals.map(v=>v>25?'#e24b4a':v>18?'#ef9f27':'#378add'),borderWidth:0}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:tc,font:{size:9}},grid:{color:gc}},y:{ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+});
+
+// === EDUCATION STACKED ===
+const eduGovs=['القاهرة','الإسكندرية','بورسعيد','السويس','دمياط','الدقهلية','الشرقية','القليوبية','كفرالشيخ','الغربية','المنوفية','البحيرة','الإسماعيلية','الجيزة','بني سويف','الفيوم','المنيا','أسيوط','سوهاج','قنا','الأقصر','أسوان'];
+new Chart(document.getElementById('eduStackC'),{type:'bar',data:{
+  labels:eduGovs,
+  datasets:[
+    {label:'أمي',data:[16.2,19,14.1,15.3,20.2,23.6,25.9,23.7,28.5,21.4,22.5,32.9,21.4,24.9,35.9,34,37.2,34.6,33.6,29.1,25.9,19.1],backgroundColor:'#e24b4a',borderWidth:0},
+    {label:'يقرأ/يكتب',data:[8.6,10.3,8.3,8.6,12.5,10.2,9.6,9.4,9.8,10.2,9.7,10.7,10.2,10.0,11.0,10.7,9.5,10.1,10.8,8.7,8.5,8.6],backgroundColor:'#ef9f27',borderWidth:0},
+    {label:'أقل من متوسط',data:[17.2,20.5,16.6,18,21,19.6,19.2,20.9,17.9,19.4,20.3,19.2,20.2,20.2,18.2,18.9,18.9,20.5,21.1,22.3,23.3,20.5],backgroundColor:'#fac775',borderWidth:0},
+    {label:'متوسط وأعلى',data:[33.2,32.3,41.3,44.5,34.6,34.7,33.6,34.4,33.6,35.1,34.9,29.9,36.2,30.6,27.4,29.2,27.8,27.7,27.2,32.4,36.0,40.9],backgroundColor:'#378add',borderWidth:0},
+    {label:'جامعي فأعلى',data:[24.8,17.9,19.7,13.6,11.6,12,11.7,11.6,10.2,13.9,12.6,7.3,12,14.3,7.5,7.2,6.6,7.1,7.3,7.5,6.3,10.9],backgroundColor:'#1d9e75',borderWidth:0}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:tc,font:{size:9},boxWidth:8}}},
+    scales:{x:{stacked:true,ticks:{color:tc,font:{size:9},maxRotation:45},grid:{color:gc}},y:{stacked:true,ticks:{color:tc,font:{size:10}},grid:{color:gc}}}}
+});
+
+// === ANEMIA ===
+new Chart(document.getElementById('anemC'),{type:'bar',data:{
+  labels:['محافظات حضرية','الوجه القبلي (حضر)','الوجه القبلي (ريف)','الوجه البحري (حضر)','الوجه البحري (ريف)','محافظات حدود'],
+  datasets:[
+    {label:'إناث 5-19',data:[39.2,34.0,35.9,24.3,31.9,33.9],backgroundColor:'#d4537e',borderWidth:0},
+    {label:'ذكور 5-19',data:[33.1,29.7,34.0,26.0,28.5,27.9],backgroundColor:'#378add',borderWidth:0}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:tc,font:{size:10},boxWidth:10}}},
+    scales:{x:{ticks:{color:tc,font:{size:10}},grid:{color:gc}},y:{ticks:{color:tc,font:{size:10},callback:v=>v+'%'},grid:{color:gc}}}}
+});
+
+// === COMPOSITE INDEX ===
+const compData=[
+  {n:'بورسعيد',t:.790,e:.966,d:.745,s:.659},
+  {n:'القاهرة',t:.688,e:.740,d:.633,s:.691},
+  {n:'دمياط',t:.625,e:.439,d:.668,s:.769},
+  {n:'السويس',t:.623,e:.618,d:.724,s:.528},
+  {n:'الإسكندرية',t:.598,e:.601,d:.660,s:.532},
+  {n:'الغربية',t:.587,e:.468,d:.643,s:.650},
+  {n:'الدقهلية',t:.583,e:.324,d:.677,s:.748},
+  {n:'المنوفية',t:.569,e:.411,d:.664,s:.631},
+  {n:'الإسماعيلية',t:.515,e:.408,d:.656,s:.480},
+  {n:'كفر الشيخ',t:.505,e:.429,d:.617,s:.469},
+  {n:'الشرقية',t:.503,e:.318,d:.580,s:.612},
+  {n:'أسوان',t:.464,e:.194,d:.683,s:.516},
+  {n:'القليوبية',t:.424,e:.447,d:.487,s:.339},
+  {n:'الجيزة',t:.396,e:.419,d:.512,s:.258},
+  {n:'الأقصر',t:.385,e:.193,d:.544,s:.417},
+  {n:'البحيرة',t:.379,e:.266,d:.518,s:.353},
+  {n:'الفيوم',t:.350,e:.315,d:.535,s:.200},
+  {n:'بني سويف',t:.347,e:.343,d:.508,s:.191},
+  {n:'قنا',t:.322,e:.208,d:.502,s:.258},
+  {n:'المنيا',t:.286,e:.241,d:.372,s:.247},
+  {n:'سوهاج',t:.264,e:.113,d:.370,s:.310},
+  {n:'أسيوط',t:.211,e:.069,d:.337,s:.228}
+];
+const cLabels=compData.map(g=>g.n);
+new Chart(document.getElementById('idxC'),{type:'bar',data:{
+  labels:cLabels,
+  datasets:[
+    {label:'المؤشر الكلي',data:compData.map(g=>g.t),backgroundColor:compData.map(g=>g.t>.6?'#1d9e75':g.t>.45?'#378add':g.t>.35?'#ef9f27':'#e24b4a'),borderWidth:0},
+    {label:'اقتصادي',data:compData.map(g=>g.e),backgroundColor:'rgba(55,138,221,.3)',borderWidth:0},
+    {label:'ديموغرافي',data:compData.map(g=>g.d),backgroundColor:'rgba(250,199,117,.3)',borderWidth:0},
+    {label:'اجتماعي',data:compData.map(g=>g.s),backgroundColor:'rgba(29,158,117,.3)',borderWidth:0}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:tc,font:{size:10},boxWidth:10}}},
+    scales:{x:{ticks:{color:tc,font:{size:9}},grid:{color:gc}},y:{min:0,max:1,ticks:{color:tc,font:{size:10}},grid:{color:gc}}}}
+});
+
+new Chart(document.getElementById('econDimC'),{type:'bar',data:{
+  labels:cLabels,datasets:[{label:'البعد الاقتصادي',data:compData.map(g=>g.e),backgroundColor:compData.map(g=>g.e>.5?'#1d9e75':g.e>.3?'#378add':'#e24b4a'),borderWidth:0}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{min:0,max:1,ticks:{color:tc,font:{size:9}},grid:{color:gc}},y:{ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+});
+
+new Chart(document.getElementById('socDimC'),{type:'bar',data:{
+  labels:cLabels,datasets:[{label:'البعد الاجتماعي',data:compData.map(g=>g.s),backgroundColor:compData.map(g=>g.s>.6?'#1d9e75':g.s>.4?'#378add':'#e24b4a'),borderWidth:0}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{min:0,max:1,ticks:{color:tc,font:{size:9}},grid:{color:gc}},y:{ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+});
+</script>

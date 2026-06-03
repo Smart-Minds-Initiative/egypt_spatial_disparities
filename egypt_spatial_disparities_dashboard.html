@@ -1,0 +1,436 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { direction: rtl; }
+.dash { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; direction: rtl; padding: 0 0 2rem; }
+.header { background: #1a3a5c; color: #fff; padding: 1.2rem 1.5rem; border-radius: var(--border-radius-lg); margin-bottom: 1.25rem; }
+.header h1 { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+.header p { font-size: 13px; opacity: 0.75; }
+.tab-bar { display: flex; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.tab { padding: 7px 14px; border-radius: var(--border-radius-md); font-size: 13px; cursor: pointer; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); color: var(--color-text-secondary); transition: all 0.15s; }
+.tab.active { background: #1a3a5c; color: #fff; border-color: #1a3a5c; }
+.section { display: none; }
+.section.active { display: block; }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1.25rem; }
+.kpi { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.85rem 1rem; }
+.kpi-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.kpi-val { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.kpi-sub { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+.card-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 1rem; }
+.rank-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.rank-table th { text-align: right; color: var(--color-text-secondary); font-weight: 400; padding: 0 0 8px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.rank-table td { padding: 7px 0; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); }
+.rank-table tr:last-child td { border-bottom: none; }
+.bar-wrap { display: flex; align-items: center; gap: 8px; }
+.bar-bg { flex: 1; height: 6px; background: var(--color-background-tertiary); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; }
+.badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); font-weight: 500; }
+.badge-top { background: #e1f5ee; color: #0f6e56; }
+.badge-mid { background: #faeeda; color: #854f0b; }
+.badge-low { background: #fcebeb; color: #a32d2d; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.chart-wrap { position: relative; width: 100%; }
+.story-block { border-right: 3px solid #1a3a5c; padding: 0.75rem 1rem; margin-bottom: 0.75rem; background: var(--color-background-secondary); border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; }
+.story-block h3 { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+.story-block p { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+.region-label { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+.policy-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.policy-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.9rem 1rem; }
+.policy-num { font-size: 28px; font-weight: 500; color: #1a3a5c; }
+.policy-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin: 4px 0; }
+.policy-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+.insight-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.insight-icon { font-size: 20px; min-width: 28px; text-align: center; margin-top: 1px; }
+.insight-text { font-size: 13px; color: var(--color-text-primary); line-height: 1.6; }
+.insight-text strong { font-weight: 500; }
+@media (max-width: 500px) {
+  .two-col { grid-template-columns: 1fr; }
+  .policy-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="dash">
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">لوحة تحكم التفاوتات المكانية على مستوى المحافظات المصرية - معهد التخطيط القومي 2026</h2>
+
+<div class="header">
+  <h1>التفاوتات المكانية على مستوى المحافظات المصرية</h1>
+  <p>معهد التخطيط القومي — سلسلة قضايا التخطيط والتنمية، العدد 373، 2026</p>
+</div>
+
+<div class="tab-bar">
+  <div class="tab active" onclick="showTab('overview')">نظرة عامة</div>
+  <div class="tab" onclick="showTab('composite')">المؤشر المركب</div>
+  <div class="tab" onclick="showTab('economy')">الاقتصاد والمعيشة</div>
+  <div class="tab" onclick="showTab('social')">الأبعاد الاجتماعية</div>
+  <div class="tab" onclick="showTab('policy')">السياسات المقترحة</div>
+</div>
+
+<!-- OVERVIEW -->
+<div id="tab-overview" class="section active">
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">عدد المحافظات المُقيّمة</div><div class="kpi-val">22</div><div class="kpi-sub">محافظة مصرية</div></div>
+    <div class="kpi"><div class="kpi-label">المحافظة الأعلى أداءً</div><div class="kpi-val">بورسعيد</div><div class="kpi-sub">مؤشر 0.79</div></div>
+    <div class="kpi"><div class="kpi-label">المحافظة الأدنى أداءً</div><div class="kpi-val">أسيوط</div><div class="kpi-sub">مؤشر 0.21</div></div>
+    <div class="kpi"><div class="kpi-label">نسبة الفقر الوطنية</div><div class="kpi-val">29.7%</div><div class="kpi-sub">2019/2020</div></div>
+    <div class="kpi"><div class="kpi-label">نسبة الأمية الوطنية</div><div class="kpi-val">19.5%</div><div class="kpi-sub">10 سنوات فأكثر</div></div>
+    <div class="kpi"><div class="kpi-label">الأمية بين الإناث</div><div class="kpi-val">23.2%</div><div class="kpi-sub">تقريباً ربع النساء</div></div>
+  </div>
+
+  <div class="story-block">
+    <h3>ما هي قضية هذا البحث؟</h3>
+    <p>التفاوتات المكانية ظاهرة عالمية، لكنها في مصر تعكس فجوات عميقة في الفرص ومستويات المعيشة بين المحافظات. بورسعيد والقاهرة في قمة الهرم، بينما تحتل محافظات الصعيد كأسيوط وسوهاج والمنيا المراتب الأخيرة بشكل ثابت في كل أبعاد التنمية.</p>
+  </div>
+  <div class="story-block">
+    <h3>ثلاثة أبعاد للتفاوت</h3>
+    <p>يُحلل البحث التفاوتات عبر ثلاثة محاور: <strong>الديموغرافي</strong> (النمو السكاني، البطالة، الإعالة، الأمية، الكثافة)، <strong>الاقتصادي</strong> (الناتج المحلي، الدخل، الإنفاق، الفقر، مشاركة المرأة)، و<strong>الاجتماعي</strong> (الصحة، التعليم، الحماية الاجتماعية).</p>
+  </div>
+  <div class="story-block">
+    <h3>الريف والحضر: فجوة داخل الفجوة</h3>
+    <p>داخل كل محافظة يوجد تفاوت إضافي بين الريف والحضر. ريف الوجه القبلي هو الإقليم الأفقر في مصر، وتقع ما يقرب من نصف أسره تحت خط الفقر. في المقابل، تتمتع المحافظات الحضرية بمؤشرات أفضل بكثير.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">تصنيف الأقاليم حسب مستوى التنمية</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+      <div style="border-radius:var(--border-radius-md); padding:0.75rem; background:#e1f5ee;">
+        <div style="font-size:13px; font-weight:500; color:#0f6e56; margin-bottom:6px;">مستوى مرتفع (1-7)</div>
+        <div style="font-size:12px; color:#085041; line-height:1.8;">بورسعيد · القاهرة · دمياط · السويس · الإسكندرية · الغربية · الدقهلية</div>
+      </div>
+      <div style="border-radius:var(--border-radius-md); padding:0.75rem; background:#faeeda;">
+        <div style="font-size:13px; font-weight:500; color:#854f0b; margin-bottom:6px;">مستوى متوسط (8-16)</div>
+        <div style="font-size:12px; color:#633806; line-height:1.8;">المنوفية · الإسماعيلية · كفر الشيخ · الشرقية · أسوان · القليوبية · الجيزة · الأقصر · البحيرة</div>
+      </div>
+      <div style="border-radius:var(--border-radius-md); padding:0.75rem; background:#fcebeb;">
+        <div style="font-size:13px; font-weight:500; color:#a32d2d; margin-bottom:6px;">مستوى منخفض (17-22)</div>
+        <div style="font-size:12px; color:#791f1f; line-height:1.8;">الفيوم · بني سويف · قنا · المنيا · سوهاج · أسيوط</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPOSITE INDEX -->
+<div id="tab-composite" class="section">
+  <div class="card">
+    <div class="card-title">نتائج المؤشر المركب — ترتيب المحافظات الـ 22</div>
+    <table class="rank-table">
+      <thead><tr>
+        <th style="width:28px;">#</th>
+        <th>المحافظة</th>
+        <th>المؤشر الكلي</th>
+        <th>الاقتصادي</th>
+        <th>الديموغرافي</th>
+        <th>الاجتماعي</th>
+        <th style="width:80px;">الأداء</th>
+      </tr></thead>
+      <tbody id="rank-body"></tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title">ثبات المؤشر — تحليل الحساسية</div>
+    <p style="font-size:13px; color:var(--color-text-secondary); margin-bottom:1rem;">تم اختبار المؤشر بثلاثة سيناريوهات لتغيير الأوزان النسبية للأبعاد الفرعية. جاءت قيم معامل الارتباط فوق 0.85 في جميع السيناريوهات، مما يدل على موثوقية عالية للنتائج.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+      <div class="kpi"><div class="kpi-label">سيناريو 1 — وزن اقتصادي أعلى</div><div class="kpi-val">0.91</div><div class="kpi-sub">معامل الارتباط</div></div>
+      <div class="kpi"><div class="kpi-label">سيناريو 2 — وزن اجتماعي أعلى</div><div class="kpi-val">0.93</div><div class="kpi-sub">معامل الارتباط</div></div>
+      <div class="kpi"><div class="kpi-label">سيناريو 3 — وزن ديموغرافي أعلى</div><div class="kpi-val">0.88</div><div class="kpi-sub">معامل الارتباط</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">قيم المؤشر المركب — مقارنة بصرية</div>
+    <div class="chart-wrap" style="height:480px;">
+      <canvas id="compositeChart" role="img" aria-label="مخطط شريطي أفقي يعرض قيم مؤشر التفاوتات المكانية للمحافظات الـ 22 مرتبة تنازلياً من بورسعيد إلى أسيوط">مؤشر التفاوتات المكانية</canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ECONOMY -->
+<div id="tab-economy" class="section">
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">متوسط الدخل السنوي — حضر</div><div class="kpi-val">أعلى</div><div class="kpi-sub">من الريف بفارق كبير</div></div>
+    <div class="kpi"><div class="kpi-label">نسبة الفقر — ريف الصعيد</div><div class="kpi-val">~50%</div><div class="kpi-sub">تحت خط الفقر</div></div>
+    <div class="kpi"><div class="kpi-label">أعلى نصيب فرد من GDP</div><div class="kpi-val">بورسعيد</div><div class="kpi-sub">وسط المحافظات</div></div>
+    <div class="kpi"><div class="kpi-label">85% من الأسر الفقيرة</div><div class="kpi-val">قللت</div><div class="kpi-sub">استهلاك اللحوم (IFPRI 2022)</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">التوزيع النسبي للناتج المحلي الإجمالي حسب الأنشطة الاقتصادية</div>
+    <div class="chart-wrap" style="height:260px;">
+      <canvas id="gdpChart" role="img" aria-label="مخطط دائري للناتج المحلي حسب القطاعات">بيانات الناتج المحلي</canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">أبرز مصادر الدخل الأسري — فجوة الريف والحضر</div>
+    <div class="insight-row">
+      <div class="insight-icon" aria-hidden="true"><i class="ti ti-briefcase" style="font-size:18px"></i></div>
+      <div class="insight-text"><strong>دخل العمل:</strong> يُشكّل المصدر الأول للأسر في أغلب المحافظات، لكنه أقل في الريف بسبب ارتفاع نسبة العمالة الزراعية غير المنتظمة.</div>
+    </div>
+    <div class="insight-row">
+      <div class="insight-icon" aria-hidden="true"><i class="ti ti-building-bank" style="font-size:18px"></i></div>
+      <div class="insight-text"><strong>القيمة الإيجارية للمسكن:</strong> تُضاف كدخل محتسب للأسر، وتختلف قيمتها اختلافاً جوهرياً بين المحافظات الحضرية والريفية.</div>
+    </div>
+    <div class="insight-row">
+      <div class="insight-icon" aria-hidden="true"><i class="ti ti-arrows-exchange" style="font-size:18px"></i></div>
+      <div class="insight-text"><strong>التحويلات الجارية:</strong> تُعدّ مصدراً مهماً في محافظات الصعيد والحدود كالعائدات من العمالة الداخلية والخارجية.</div>
+    </div>
+    <div class="insight-row" style="border-bottom:none;">
+      <div class="insight-icon" aria-hidden="true"><i class="ti ti-chart-arrows-vertical" style="font-size:18px"></i></div>
+      <div class="insight-text"><strong>معدل الرقم القياسي لأسعار المستهلك:</strong> تتباين الأرقام القياسية بين المحافظات (يوليو 2025)، مما يعني أن الدخل الاسمي المتساوي يُمثل قدرة شرائية مختلفة.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">الفقر — تطور وتوزيع</div>
+    <div class="chart-wrap" style="height:280px;">
+      <canvas id="povertyChart" role="img" aria-label="مخطط شريطي لنسبة الفقر بالمحافظات">نسب الفقر بالمحافظات</canvas>
+    </div>
+  </div>
+</div>
+
+<!-- SOCIAL -->
+<div id="tab-social" class="section">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">الصحة — أبرز المؤشرات</div>
+      <div class="insight-row">
+        <div class="insight-icon"><i class="ti ti-stethoscope" style="font-size:18px" aria-hidden="true"></i></div>
+        <div class="insight-text"><strong>الأنيميا بين الأطفال (6-59 شهر):</strong> تمتد النسبة بين الأقاليم. محافظات الصعيد الأعلى تأثراً.</div>
+      </div>
+      <div class="insight-row">
+        <div class="insight-icon"><i class="ti ti-user-heart" style="font-size:18px" aria-hidden="true"></i></div>
+        <div class="insight-text"><strong>الأنيميا بين النساء المتزوجات 15-49:</strong> 45.7% في المحافظات الحضرية، 38.6% في الوجه القبلي.</div>
+      </div>
+      <div class="insight-row" style="border-bottom:none;">
+        <div class="insight-icon"><i class="ti ti-building-hospital" style="font-size:18px" aria-hidden="true"></i></div>
+        <div class="insight-text"><strong>تباين كبير</strong> في نسبة الأسرة بالمستشفيات والأطباء لكل 10,000 نسمة بين المحافظات.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">التعليم — أبرز المؤشرات</div>
+      <div class="insight-row">
+        <div class="insight-icon"><i class="ti ti-school" style="font-size:18px" aria-hidden="true"></i></div>
+        <div class="insight-text"><strong>كثافة الفصول:</strong> المتوسط الوطني 47 طالباً. أسيوط تصل إلى 56 في الابتدائي.</div>
+      </div>
+      <div class="insight-row">
+        <div class="insight-icon"><i class="ti ti-chart-bar" style="font-size:18px" aria-hidden="true"></i></div>
+        <div class="insight-text"><strong>التسرب الإعدادي:</strong> أسيوط (1.82%)، بني سويف (1.31%)، مطروح (1.15%) الأعلى.</div>
+      </div>
+      <div class="insight-row" style="border-bottom:none;">
+        <div class="insight-icon"><i class="ti ti-abc" style="font-size:18px" aria-hidden="true"></i></div>
+        <div class="insight-text"><strong>الأمية:</strong> المنيا 28.4%، الفيوم 27.5%، أسيوط 28% — مقارنة بـ 2.2% في جنوب سيناء.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">كثافة الفصول في التعليم الابتدائي (2023-2024) — أبرز المحافظات</div>
+    <div class="chart-wrap" style="height:300px;">
+      <canvas id="educChart" role="img" aria-label="مخطط شريطي لكثافة الفصول في التعليم الابتدائي بالمحافظات">كثافة الفصول</canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">الحماية الاجتماعية — التغطية والفجوات</div>
+    <div class="insight-row">
+      <div class="insight-icon"><i class="ti ti-heart-handshake" style="font-size:18px" aria-hidden="true"></i></div>
+      <div class="insight-text"><strong>برنامج تكافل وكرامة:</strong> يغطي ~4.7 مليون أسرة. التغطية الأوسع في ريف الوجه القبلي باعتباره الأكثر فقراً.</div>
+    </div>
+    <div class="insight-row">
+      <div class="insight-icon"><i class="ti ti-shield-check" style="font-size:18px" aria-hidden="true"></i></div>
+      <div class="insight-text"><strong>دعم الغذاء:</strong> يُعدّ شريان أمان رئيسياً للأسر الفقيرة، لكن الأسر تُقلل استهلاك البروتين في ظل الضغوط التضخمية.</div>
+    </div>
+    <div class="insight-row" style="border-bottom:none;">
+      <div class="insight-icon"><i class="ti ti-id" style="font-size:18px" aria-hidden="true"></i></div>
+      <div class="insight-text"><strong>التأمين الصحي الشامل:</strong> التغطية تتباين بشكل ملحوظ عبر المحافظات، والريف الأقل حظاً من الحضر.</div>
+    </div>
+  </div>
+</div>
+
+<!-- POLICY -->
+<div id="tab-policy" class="section">
+  <div class="story-block">
+    <h3>رؤية متكاملة لتحقيق العدالة المكانية</h3>
+    <p>يقترح البحث ثلاث مجموعات من السياسات تُعالج التفاوتات المكانية من زوايا مختلفة: قياس البيانات وسدّ الفجوات المعلوماتية، وإصلاح الأطر المؤسسية والتمويلية، ثم توطين التنمية الإقليمية المستدامة.</p>
+  </div>
+  <div class="policy-grid" style="margin-bottom:1rem;">
+    <div class="policy-card">
+      <div class="policy-num">01</div>
+      <div class="policy-title">طرق القياس وفجوة البيانات</div>
+      <div class="policy-desc">تطوير منهجية القياس وتوسيع نطاقها لتشمل مزيداً من المتغيرات. معالجة الفجوات المعلوماتية التي تعيق التخطيط العلمي الرصين على المستوى المحلي.</div>
+    </div>
+    <div class="policy-card">
+      <div class="policy-num">02</div>
+      <div class="policy-title">الأطر المؤسسية والتمويلية</div>
+      <div class="policy-desc">إصلاح الأطر المؤسسية اللازمة لتحقيق العدالة المكانية. ضمان التمويل الكافي والعادل للمحافظات الأقل حظاً بعيداً عن مركزية الإنفاق.</div>
+    </div>
+    <div class="policy-card">
+      <div class="policy-num">03</div>
+      <div class="policy-title">توطين التنمية المستدامة</div>
+      <div class="policy-desc">سياسات توطين التنمية الإقليمية عبر الوحدات الجغرافية المختلفة. الاستهداف الجغرافي الدقيق لمحافظات الصعيد ذات الأولوية القصوى.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">الدروس المستفادة من التجارب الدولية</div>
+    <div class="insight-row">
+      <div class="insight-icon"><i class="ti ti-flag" style="font-size:18px" aria-hidden="true"></i></div>
+      <div class="insight-text"><strong>ألمانيا الموحدة:</strong> ضخّت استثمارات ضخمة في البنية التحتية والمؤسسات للمحافظات الشرقية، مع اللامركزية الإدارية المدعومة مركزياً.</div>
+    </div>
+    <div class="insight-row">
+      <div class="insight-icon"><i class="ti ti-flag" style="font-size:18px" aria-hidden="true"></i></div>
+      <div class="insight-text"><strong>الصين:</strong> استراتيجية تطوير المناطق الغربية، وسياسات التوطين الريفي، وربط المناطق النائية بشبكات الطرق والرقمنة.</div>
+    </div>
+    <div class="insight-row">
+      <div class="insight-icon"><i class="ti ti-flag" style="font-size:18px" aria-hidden="true"></i></div>
+      <div class="insight-text"><strong>كوريا الجنوبية:</strong> سياسات تحفيز الاستثمار في المناطق غير العاصمة، وصناديق الاستثمار الملائكي الإقليمي لدعم ريادة الأعمال.</div>
+    </div>
+    <div class="insight-row" style="border-bottom:none;">
+      <div class="insight-icon"><i class="ti ti-flag" style="font-size:18px" aria-hidden="true"></i></div>
+      <div class="insight-text"><strong>البرازيل:</strong> برنامج بولسا فاميليا للتحويلات النقدية المشروطة بالتعليم والصحة — يُماثل برنامج تكافل المصري، مع أهمية التقييم المستمر لآثاره.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">أولويات صانع القرار — محافظات تستحق التدخل الفوري</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;">
+      <div style="text-align:center;padding:0.75rem;background:#fcebeb;border-radius:var(--border-radius-md);"><div style="font-size:20px;font-weight:500;color:#a32d2d;">أسيوط</div><div style="font-size:11px;color:#791f1f;">الترتيب 22</div></div>
+      <div style="text-align:center;padding:0.75rem;background:#fcebeb;border-radius:var(--border-radius-md);"><div style="font-size:20px;font-weight:500;color:#a32d2d;">سوهاج</div><div style="font-size:11px;color:#791f1f;">الترتيب 21</div></div>
+      <div style="text-align:center;padding:0.75rem;background:#fcebeb;border-radius:var(--border-radius-md);"><div style="font-size:20px;font-weight:500;color:#a32d2d;">المنيا</div><div style="font-size:11px;color:#791f1f;">الترتيب 20</div></div>
+      <div style="text-align:center;padding:0.75rem;background:#faeeda;border-radius:var(--border-radius-md);"><div style="font-size:20px;font-weight:500;color:#854f0b;">قنا</div><div style="font-size:11px;color:#633806;">الترتيب 19</div></div>
+      <div style="text-align:center;padding:0.75rem;background:#faeeda;border-radius:var(--border-radius-md);"><div style="font-size:20px;font-weight:500;color:#854f0b;">بني سويف</div><div style="font-size:11px;color:#633806;">الترتيب 18</div></div>
+      <div style="text-align:center;padding:0.75rem;background:#faeeda;border-radius:var(--border-radius-md);"><div style="font-size:20px;font-weight:500;color:#854f0b;">الفيوم</div><div style="font-size:11px;color:#633806;">الترتيب 17</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function showTab(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+const govData = [
+  { name: 'بورسعيد', rank: 1, total: 0.790, eco: 0.966, dem: 0.745, soc: 0.659 },
+  { name: 'القاهرة', rank: 2, total: 0.688, eco: 0.740, dem: 0.633, soc: 0.691 },
+  { name: 'دمياط', rank: 3, total: 0.625, eco: 0.439, dem: 0.668, soc: 0.769 },
+  { name: 'السويس', rank: 4, total: 0.623, eco: 0.618, dem: 0.724, soc: 0.528 },
+  { name: 'الإسكندرية', rank: 5, total: 0.598, eco: 0.601, dem: 0.660, soc: 0.532 },
+  { name: 'الغربية', rank: 6, total: 0.587, eco: 0.468, dem: 0.643, soc: 0.650 },
+  { name: 'الدقهلية', rank: 7, total: 0.583, eco: 0.324, dem: 0.677, soc: 0.748 },
+  { name: 'المنوفية', rank: 8, total: 0.569, eco: 0.411, dem: 0.664, soc: 0.631 },
+  { name: 'الإسماعيلية', rank: 9, total: 0.515, eco: 0.408, dem: 0.656, soc: 0.480 },
+  { name: 'كفر الشيخ', rank: 10, total: 0.505, eco: 0.429, dem: 0.617, soc: 0.469 },
+  { name: 'الشرقية', rank: 11, total: 0.503, eco: 0.318, dem: 0.580, soc: 0.612 },
+  { name: 'أسوان', rank: 12, total: 0.464, eco: 0.194, dem: 0.683, soc: 0.516 },
+  { name: 'القليوبية', rank: 13, total: 0.424, eco: 0.447, dem: 0.487, soc: 0.339 },
+  { name: 'الجيزة', rank: 14, total: 0.396, eco: 0.419, dem: 0.512, soc: 0.258 },
+  { name: 'الأقصر', rank: 15, total: 0.385, eco: 0.193, dem: 0.544, soc: 0.417 },
+  { name: 'البحيرة', rank: 16, total: 0.379, eco: 0.266, dem: 0.518, soc: 0.353 },
+  { name: 'الفيوم', rank: 17, total: 0.350, eco: 0.315, dem: 0.535, soc: 0.200 },
+  { name: 'بني سويف', rank: 18, total: 0.347, eco: 0.343, dem: 0.508, soc: 0.191 },
+  { name: 'قنا', rank: 19, total: 0.322, eco: 0.208, dem: 0.502, soc: 0.258 },
+  { name: 'المنيا', rank: 20, total: 0.286, eco: 0.241, dem: 0.372, soc: 0.247 },
+  { name: 'سوهاج', rank: 21, total: 0.264, eco: 0.113, dem: 0.370, soc: 0.310 },
+  { name: 'أسيوط', rank: 22, total: 0.211, eco: 0.069, dem: 0.337, soc: 0.228 }
+];
+
+const tbody = document.getElementById('rank-body');
+govData.forEach(g => {
+  const badge = g.rank <= 7 ? 'badge-top' : g.rank <= 16 ? 'badge-mid' : 'badge-low';
+  const pct = Math.round(g.total * 100);
+  const color = g.rank <= 7 ? '#1d9e75' : g.rank <= 16 ? '#ba7517' : '#e24b4a';
+  tbody.innerHTML += `<tr>
+    <td style="color:var(--color-text-tertiary); font-size:12px;">${g.rank}</td>
+    <td style="font-weight:500;">${g.name}</td>
+    <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${pct}%; background:${color};"></div></div><span style="font-size:12px; min-width:32px;">${g.total.toFixed(2)}</span></div></td>
+    <td style="font-size:12px;">${g.eco.toFixed(2)}</td>
+    <td style="font-size:12px;">${g.dem.toFixed(2)}</td>
+    <td style="font-size:12px;">${g.soc.toFixed(2)}</td>
+    <td><span class="badge ${badge}">${g.rank <= 7 ? 'مرتفع' : g.rank <= 16 ? 'متوسط' : 'منخفض'}</span></td>
+  </tr>`;
+});
+
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const textColor = isDark ? '#ccc' : '#555';
+const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+
+const sorted = [...govData].reverse();
+new Chart(document.getElementById('compositeChart'), {
+  type: 'bar',
+  data: {
+    labels: sorted.map(g => g.name),
+    datasets: [
+      { label: 'اجتماعي', data: sorted.map(g => g.soc), backgroundColor: '#9fe1cb' },
+      { label: 'اقتصادي', data: sorted.map(g => g.eco), backgroundColor: '#378add' },
+      { label: 'ديموغرافي', data: sorted.map(g => g.dem), backgroundColor: '#fac775' }
+    ]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { mode: 'index' } },
+    scales: {
+      x: { stacked: false, ticks: { color: textColor, font: { size: 11 } }, grid: { color: gridColor } },
+      y: { ticks: { color: textColor, font: { size: 11 } }, grid: { color: gridColor } }
+    }
+  }
+});
+
+const gdpLabels = ['تجارة وضيافة', 'صناعة', 'خدمات حكومية', 'عقارات', 'نقل', 'زراعة', 'أخرى'];
+const gdpVals = [20, 17, 16, 11, 9, 8, 19];
+new Chart(document.getElementById('gdpChart'), {
+  type: 'doughnut',
+  data: {
+    labels: gdpLabels,
+    datasets: [{ data: gdpVals, backgroundColor: ['#378add','#1d9e75','#fac775','#d4537e','#534ab7','#d85a30','#888780'], borderWidth: 0 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'right', labels: { color: textColor, font: { size: 11 }, boxWidth: 12 } }, tooltip: { callbacks: { label: (c) => ` ${c.label}: ${c.parsed}%` } } }
+  }
+});
+
+const povertyGovs = ['أسيوط','سوهاج','المنيا','قنا','الفيوم','البحيرة','بني سويف','الأقصر','الجيزة','القاهرة'];
+const povertyVals = [57.7, 43.9, 40.9, 38.1, 37.9, 37.9, 35.7, 23.1, 22.5, 8.1];
+new Chart(document.getElementById('povertyChart'), {
+  type: 'bar',
+  data: {
+    labels: povertyGovs,
+    datasets: [{ label: 'نسبة الفقر %', data: povertyVals,
+      backgroundColor: povertyVals.map(v => v > 40 ? '#e24b4a' : v > 30 ? '#ef9f27' : '#378add'),
+      borderWidth: 0 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: textColor, font: { size: 11 } }, grid: { color: gridColor } },
+      y: { ticks: { color: textColor, font: { size: 11 }, callback: v => v + '%' }, grid: { color: gridColor } }
+    }
+  }
+});
+
+const educGovs = ['أسيوط','الجيزة','القليوبية','المنيا','الفيوم','بني سويف','سوهاج','الدقهلية','الإسكندرية','القاهرة','جنوب سيناء'];
+const educVals = [56, 55, 55, 55, 52, 53, 52, 51, 50, 46, 25];
+new Chart(document.getElementById('educChart'), {
+  type: 'bar',
+  data: {
+    labels: educGovs,
+    datasets: [{ label: 'متوسط كثافة الفصل', data: educVals,
+      backgroundColor: educVals.map(v => v >= 54 ? '#e24b4a' : v >= 50 ? '#ef9f27' : '#378add'),
+      borderWidth: 0 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: textColor, font: { size: 11 } }, grid: { color: gridColor } },
+      y: { min: 0, ticks: { color: textColor, font: { size: 11 }, callback: v => v + ' طالب' }, grid: { color: gridColor } }
+    }
+  }
+});
+</script>

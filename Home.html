@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التفاوتات المكانية على مستوى المحافظات المصرية (التشخيص والعلاج) - معهد التخطيط القومي 2026</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Cairo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        inp: {
+                            gold: '#C5A880',
+                            navy: '#0F2C59',
+                            teal: '#10B981',
+                            dark: '#1E293B',
+                            light: '#F8FAFC',
+                            slate: '#64748B'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #C5A880;
+            border-radius: 3px;
+        }
+        .active-tab {
+            border-right: 4px solid #C5A880;
+            background-color: rgba(197, 168, 128, 0.1);
+            color: #C5A880 !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 custom-scrollbar">
+
+    <!-- Top Bar with Official Header -->
+    <header class="bg-inp-navy text-white shadow-md sticky top-0 z-50 px-4 py-3 lg:px-8 flex flex-wrap justify-between items-center">
+        <div class="flex items-center space-x-3 space-x-reverse">
+            <!-- INP Emblem Placeholder / Styled Icon -->
+            <div class="bg-white text-inp-navy p-2 rounded-full h-10 w-10 flex items-center justify-center font-bold text-lg border-2 border-inp-gold">
+                م
+            </div>
+            <div>
+                <h1 class="text-xs lg:text-sm font-semibold text-inp-gold tracking-wider">جمهورية مصر العربية - معهد التخطيط القومي</h1>
+                <p class="text-xs lg:text-base font-bold text-white">سلسلة قضايا التخطيط والتنمية - إصدار رقم (373) - 2026</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 mt-2 sm:mt-0">
+            <span class="bg-inp-gold/20 text-inp-gold border border-inp-gold/40 px-3 py-1 rounded-full text-xs font-bold">
+                دراسة علمية محكمة
+            </span>
+            <button onclick="window.print()" class="bg-inp-gold text-inp-navy hover:bg-white hover:text-inp-navy font-bold text-xs px-3 py-1.5 rounded transition duration-200 flex items-center gap-1">
+                <i class="fa-solid fa-print"></i> طباعة التقرير
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="min-h-screen flex flex-col lg:flex-row">
+        
+        <!-- Navigation Sidebar -->
+        <aside class="w-full lg:w-80 bg-inp-dark text-white flex-shrink-0 border-l border-slate-700">
+            <div class="p-6 border-b border-slate-700 bg-slate-900/50">
+                <h2 class="text-sm font-bold text-inp-gold">التفاوتات المكانية على مستوى المحافظات</h2>
+                <p class="text-xs text-slate-400 mt-1">التشخيص والعلاج • فريق بحثي مشترك</p>
+                <div class="mt-4 p-2 bg-inp-dark/80 rounded border border-inp-gold/30 text-xs">
+                    <span class="text-inp-gold font-semibold"><i class="fa-solid fa-user-tie ml-1"></i> رئيس المعهد:</span> أ.د. أشرف العربي
+                </div>
+            </div>
+            
+            <nav class="p-4 space-y-1" id="sidebar-nav">
+                <button onclick="switchTab('overview')" class="w-full text-right px-4 py-3 rounded text-sm text-slate-300 hover:bg-slate-800 hover:text-white flex items-center justify-between transition active-tab" id="btn-overview">
+                    <span><i class="fa-solid fa-square-poll-vertical ml-2"></i> الملخص واللوحة العامة</span>
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+                <button onclick="switchTab('international')" class="w-full text-right px-4 py-3 rounded text-sm text-slate-300 hover:bg-slate-800 hover:text-white flex items-center justify-between transition" id="btn-international">
+                    <span><i class="fa-solid fa-globe ml-2"></i> أفضل الممارسات الدولية</span>
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+                <button onclick="switchTab('demographic')" class="w-full text-right px-4 py-3 rounded text-sm text-slate-300 hover:bg-slate-800 hover:text-white flex items-center justify-between transition" id="btn-demographic">
+                    <span><i class="fa-solid fa-users-viewfinder ml-2"></i> خريطة التفاوت الديموغرافي</span>
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+                <button onclick="switchTab('economic')" class="w-full text-right px-4 py-3 rounded text-sm text-slate-300 hover:bg-slate-800 hover:text-white flex items-center justify-between transition" id="btn-economic">
+                    <span><i class="fa-solid fa-chart-line ml-2"></i> خريطة التفاوت الاقتصادي</span>
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+                <button onclick="switchTab('social')" class="w-full text-right px-4 py-3 rounded text-sm text-slate-300 hover:bg-slate-800 hover:text-white flex items-center justify-between transition" id="btn-social">
+                    <span><i class="fa-solid fa-handshake-angle ml-2"></i> خريطة التفاوت الاجتماعي</span>
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+                <button onclick="switchTab('composite')" class="w-full text-right px-4 py-3 rounded text-sm text-slate-300 hover:bg-slate-800 hover:text-white flex items-center justify-between transition" id="btn-composite">
+                    <span><i class="fa-solid fa-calculator ml-2"></i> المؤشر المركب للحرمان</span>
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+                <button onclick="switchTab('statistical')" class="w-full text-right px-4 py-3 rounded text-sm text-slate-300 hover:bg-slate-800 hover:text-white flex items-center justify-between transition" id="btn-statistical">
+                    <span><i class="fa-solid fa-chart-line ml-2"></i> العوامل الحاكمة (دلالات إحصائية)</span>
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+                <button onclick="switchTab('policies')" class="w-full text-right px-4 py-3 rounded text-sm text-slate-300 hover:bg-slate-800 hover:text-white flex items-center justify-between transition" id="btn-policies">
+                    <span><i class="fa-solid fa-map-location-dot ml-2"></i> رؤية العلاج والسياسات</span>
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+            </nav>
+
+            <div class="p-6 mt-10 border-t border-slate-700 text-xs text-slate-400">
+                <p class="font-bold text-slate-300 mb-2">فريق الدراسة الأساسي:</p>
+                <ul class="space-y-1 list-disc list-inside">
+                    <li>أ.د. هويدا عدلي رومان (رئيس)</li>
+                    <li>أ.د. فريد عبد العال</li>
+                    <li>أ.د. أحمد عبد العزيز البقلي</li>
+                    <li>د. أمل زكريا عامر</li>
+                    <li>د. حامد هطل</li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Content Container -->
+        <main class="flex-1 p-4 lg:p-8 overflow-y-auto">
+            
+            <!-- OVERVIEW TAB -->
+            <section id="tab-overview" class="space-y-6">
+                
+                <!-- Hero Cover Widget -->
+                <div class="bg-gradient-to-r from-inp-navy to-slate-900 text-white rounded-2xl p-6 lg:p-8 shadow-xl relative overflow-hidden">
+                    <div class="absolute inset-0 bg-cover bg-center opacity-10" style="background-image: url('https://placehold.co/1000x400/0f2c59/ffffff?text=INP+Egypt+Map');"></div>
+                    <div class="relative z-10 max-w-4xl space-y-4">
+                        <span class="bg-inp-gold text-inp-navy font-bold px-3 py-1 rounded text-xs uppercase">إصدار حصري 2026</span>
+                        <h2 class="text-2xl lg:text-4xl font-extrabold leading-tight text-inp-gold">
+                            التفاوتات المكانية على مستوى المحافظات المصرية: <br class="hidden lg:block">التشخيص والعلاج
+                        </h2>
+                        <p class="text-sm lg:text-base text-slate-200 text-justify leading-relaxed">
+                            يسعى هذا البحث الاستراتيجي لرسم خريطة تفصيلية للتفاوتات المكانية بين الـ 27 محافظة مصرية، وبين الريف والحضر في إطار معالجة العدالة المكانية كجزء لا يتجزأ من العدالة الاجتماعية. تتنوع مسببات الفجوات بين أبعاد ديمغرافية، واقتصادية، واجتماعية مركبة تفرض على صانع القرار رؤية متوازنة تعتمد على الأدلة العلمية.
+                        </p>
+                        <div class="flex flex-wrap gap-4 pt-2 text-xs">
+                            <span class="bg-white/10 px-3 py-1.5 rounded-full"><i class="fa-solid fa-file-circle-check text-inp-gold ml-1"></i> سلسلة محكمة علمياً</span>
+                            <span class="bg-white/10 px-3 py-1.5 rounded-full"><i class="fa-solid fa-user-group text-inp-gold ml-1"></i> دراسة بينية متعددة التخصصات</span>
+                            <span class="bg-white/10 px-3 py-1.5 rounded-full"><i class="fa-solid fa-globe-africa text-inp-gold ml-1"></i> تسعى لتوطين التنمية المستدامة</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUICK STATS WIDGETS -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-slate-500">أعلى المحافظات تنمية</span>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded">المرتبة 1</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">بورسعيد</h3>
+                        <p class="text-xs text-slate-400 mt-1">المؤشر المركب: <span class="text-emerald-600 font-bold">0.790</span></p>
+                    </div>
+                    
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-slate-500">أدنى المحافظات تنمية</span>
+                            <span class="bg-rose-100 text-rose-800 text-xs font-bold px-2 py-0.5 rounded">المرتبة 22</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">أسيوط</h3>
+                        <p class="text-xs text-slate-400 mt-1">المؤشر المركب: <span class="text-rose-600 font-bold">0.211</span></p>
+                    </div>
+                    
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-slate-500">فجوة الفقر (الوجه القبلي)</span>
+                            <span class="text-amber-600"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">66.7 %</h3>
+                        <p class="text-xs text-slate-400 mt-1">نسبة الفقر بمحافظة أسيوط</p>
+                    </div>
+                    
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-slate-500">معدل التغطية التموينية</span>
+                            <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded">تغطية واسعة</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">58.3 %</h3>
+                        <p class="text-xs text-slate-400 mt-1">من إجمالي سكان الجمهورية</p>
+                    </div>
+                </div>
+
+                <!-- EXECUTIVE SUMMARY & INTERACTIVE REGION SELECTOR -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                        <h3 class="text-lg font-bold text-inp-navy border-b pb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-circle-info text-inp-gold"></i> المشكلة محل البحث والإطار التحليلي
+                        </h3>
+                        <p class="text-sm text-slate-600 leading-relaxed text-justify">
+                            تعاني مصر من تفاوتات مكانية واضحة وهيكلية بين المحافظات الـ 27، وبين الريف والحضر، ويبرز ذلك بشكل خاص في توزيع معدلات الفقر والحرمان المتعدد الأبعاد. تفترض نظريات النمو الكلاسيكية انتقال ثمار التنمية تدريجياً من المراكز للأطراف (تساقط الثمار)، إلا أن الواقع أثبت حدوث نمو غير متوازن واستقطاب مستمر للموارد في القاهرة الكبرى والمدن الكبرى على حساب ريف الوجه القبلي ومحافظات الحدود الهامشية.
+                        </p>
+                        <p class="text-sm text-slate-600 leading-relaxed text-justify">
+                            تسلط هذه الدراسة الضوء على الفجوات المركبة عبر بناء <strong>مؤشر مركب للتفاوتات المكانية</strong> يتكون من ثلاثة أبعاد رئيسية: الديموغرافي، الاقتصادي، والاجتماعي، بهدف تزويد متخذي القرار بمسارات وأولويات تنموية واضحة ومبنية على الأدلة والتحليلات الإحصائية الدقيقة.
+                        </p>
+                        <div class="p-4 bg-amber-50 rounded-lg border-r-4 border-amber-500 text-xs text-amber-800">
+                            <strong>ملاحظة هامة للاستبعاد الإحصائي:</strong> تم استبعاد المحافظات الحدودية الخمس (شمال سيناء، جنوب سيناء، البحر الأحمر، الوادي الجديد، ومطروح) عند بناء المؤشر المركب لمنع تحيز البيانات نظراً لخصائصها الجغرافية المتفردة ومساحتها الشاسعة وكثافتها السكانية المنخفضة للغاية.
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-inp-navy border-b pb-3 mb-4">
+                                <i class="fa-solid fa-map-location text-inp-gold"></i> تقسيم الأقاليم المصرية
+                            </h3>
+                            <div class="space-y-2">
+                                <button onclick="highlightRegion('urban')" class="w-full text-right p-3 rounded-lg border hover:border-inp-gold hover:bg-slate-50 text-xs font-semibold flex items-center justify-between text-slate-700 transition" id="region-urban">
+                                    <span>المحافظات الحضرية (القاهرة، الإسكندرية، بورسعيد، السويس)</span>
+                                    <i class="fa-solid fa-city text-inp-gold"></i>
+                                </button>
+                                <button onclick="highlightRegion('lower')" class="w-full text-right p-3 rounded-lg border hover:border-inp-gold hover:bg-slate-50 text-xs font-semibold flex items-center justify-between text-slate-700 transition" id="region-lower">
+                                    <span>محافظات الوجه البحري (الدلتا والقناة)</span>
+                                    <i class="fa-solid fa-wheat-awn text-inp-teal"></i>
+                                </button>
+                                <button onclick="highlightRegion('upper')" class="w-full text-right p-3 rounded-lg border hover:border-inp-gold hover:bg-slate-50 text-xs font-semibold flex items-center justify-between text-slate-700 transition" id="region-upper">
+                                    <span>محافظات الوجه القبلي (الصعيد)</span>
+                                    <i class="fa-solid fa-mountain text-amber-600"></i>
+                                </button>
+                                <button onclick="highlightRegion('frontier')" class="w-full text-right p-3 rounded-lg border hover:border-inp-gold hover:bg-slate-50 text-xs font-semibold flex items-center justify-between text-slate-700 transition" id="region-frontier">
+                                    <span>محافظات الحدود (المساحات الصحراوية)</span>
+                                    <i class="fa-solid fa-sun text-red-500"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-slate-50 rounded-lg border text-xs text-slate-500" id="region-details">
+                            انقر فوق أحد الأقاليم لعرض تصنيفها العام والتحدي الأبرز لها بناء على مخرجات الدراسة.
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- INTERNATIONAL EXPERIENCES TAB -->
+            <section id="tab-international" class="space-y-6 hidden">
+                <div class="flex items-center justify-between border-b pb-4">
+                    <div>
+                        <h2 class="text-xl lg:text-2xl font-bold text-inp-navy">أفضل الممارسات الدولية في معالجة التفاوتات المكانية</h2>
+                        <p class="text-xs text-slate-500 mt-1">دروس مستفادة من تجارب ناجحة لتخفيض الفجوات التنموية</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Germany -->
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-bold text-slate-400">تأسست بعد التوحيد</span>
+                                <span class="bg-inp-gold/20 text-inp-gold px-2 py-0.5 rounded text-xs font-bold">ألمانيا الموحدة</span>
+                            </div>
+                            <h4 class="text-base font-bold text-slate-800 mb-2">ضريبة التضامن واللامركزية</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                                واجهت ألمانيا تفاوتات كبرى بين الشرق والغرب بعد توحيد عام 1990. تم تبني سياسة التضامن الاجتماعي وفرض ضريبة خاصة "ضريبة التضامن" لتمويل البنية التحتية والخدمات والمشروعات في الولايات الشرقية الأقل نمواً مع التخطيط الاستراتيجي الشامل.
+                            </p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-lg text-xs mt-4">
+                            <span class="font-bold text-inp-navy">الدرس المستفاد لمصر:</span> أهمية إنشاء صناديق دعم وتنمية تضامنية مخصصة لدعم المحافظات الأكثر فقراً بالصعيد.
+                        </div>
+                    </div>
+
+                    <!-- China -->
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-bold text-slate-400">التنمية المتوازنة</span>
+                                <span class="bg-inp-gold/20 text-inp-gold px-2 py-0.5 rounded text-xs font-bold">جمهورية الصين الشعبية</span>
+                            </div>
+                            <h4 class="text-base font-bold text-slate-800 mb-2">استراتيجية تنمية الغرب والتوطين</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                                لمعالجة الفجوة الشاسعة بين الساحل الشرقي والداخل الغربي، أطلقت الصين استراتيجية "تنمية الغرب الكبير" 1999، ونقلت الكثير من الصناعات الثقيلة والاستثمارات للداخل مع ربطهما بشبكة قطارات فائقة السرعة، بجانب إلغاء الضرائب الزراعية لرفع دخول المزارعين.
+                            </p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-lg text-xs mt-4">
+                            <span class="font-bold text-inp-navy">الدرس المستفاد لمصر:</span> تحفيز الاستثمار الصناعي في ريف الصعيد والظهير الصحراوي لربطه بالموانئ.
+                        </div>
+                    </div>
+
+                    <!-- France -->
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-bold text-slate-400">أقطاب النمو واللامركزية</span>
+                                <span class="bg-inp-gold/20 text-inp-gold px-2 py-0.5 rounded text-xs font-bold">فرنسا</span>
+                            </div>
+                            <h4 class="text-base font-bold text-slate-800 mb-2">تخطيط استعماال الأراضي الشامل</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                                تفعيل اللامركزية عبر نقل الصلاحيات والموارد المالية والقرارات التخطيطية للمحليات مع وضع برنامج التجديد الحضري الفرنسي واستبدال العشوائيات بمساكن ميسرة وتنشيط التنمية الريفية (مبادرة ZRR) بالإعفاءات الضريبية للشركات.
+                            </p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-lg text-xs mt-4">
+                            <span class="font-bold text-inp-navy">الدرس المستفاد لمصر:</span> تخويل الإدارات المحلية سلطة تحديد الاحتياجات وفرض لوائح استخدامات الأراضي المناسبة.
+                        </div>
+                    </div>
+
+                    <!-- South Korea -->
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-bold text-slate-400">إصلاح زراعي وتحديث</span>
+                                <span class="bg-inp-gold/20 text-inp-gold px-2 py-0.5 rounded text-xs font-bold">كوريا الجنوبية</span>
+                            </div>
+                            <h4 class="text-base font-bold text-slate-800 mb-2">صناديائ دعم ومبادرات من أسفل لأعلى</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                                السيطرة على تضخم العاصمة سيول عبر قانون إدارة العاصمة 1982، وتطوير "مدن الابتكار" التكنولوجية في الأقاليم الأخرى، وبناء اقتصاد ريفي متطور قائم على التمكين التعاوني وربط التعليم الفني والتجريبي بالصناعات المتوطنة محلياً.
+                            </p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-lg text-xs mt-4">
+                            <span class="font-bold text-inp-navy">الدرس المستفاد لمصر:</span> تطبيق اللامركزية في ربط الكليات التكنولوجية باحتياجات المحافظات المتخصصة.
+                        </div>
+                    </div>
+
+                    <!-- Japan -->
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-bold text-slate-400">مواجهة الشيخوخة السكانية</span>
+                                <span class="bg-inp-gold/20 text-inp-gold px-2 py-0.5 rounded text-xs font-bold">اليابان</span>
+                            </div>
+                            <h4 class="text-base font-bold text-slate-800 mb-2">هيكل إقليمي مترابط ومدن ذكية مستدامة</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                                مواجهة هجرة الشباب وترك كبار السن في الريف بإنشاء هيكل إقليمي مترابط يضمن للجميع الوصول للخدمات، وتقديم حوافز ضريبية كبيرة للشركات التي تخرج خارج العاصمة طوكيو ودعم المزارعين في المناطق الوعرة والجبلية.
+                            </p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-lg text-xs mt-4">
+                            <span class="font-bold text-inp-navy">الدرس المستفاد لمصر:</span> تطوير حلول رقمية ومدن مستدامة لتسهيل ربط القرى النائية والنجوع بالخدمات الرقمية.
+                        </div>
+                    </div>
+
+                    <!-- Brazil -->
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-bold text-slate-400">مكافحة الجوع والفقر</span>
+                                <span class="bg-inp-gold/20 text-inp-gold px-2 py-0.5 rounded text-xs font-bold">البرازيل</span>
+                            </div>
+                            <h4 class="text-base font-bold text-slate-800 mb-2">برنامج Bolsa Família للتحويلات النقدية</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                                تميزت البرازيل بتطبيق التحويلات النقدية المشروطة للأسر الأكثر فقراً لربطها بالصحة والتعليم، بجانب تطوير البنية التحتية والمرافق بالقرى النائية وتوفير سكن الاجتماعي مناسب والربط الجغرافي للموارد عبر نظم المعلومات الجغرافية.
+                            </p>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-lg text-xs mt-4">
+                            <span class="font-bold text-inp-navy">الدرس المستفاد لمصر:</span> استكمال مبادرة "تكافل وكرامة" لتكون شبكة حماية مرنة ومتحركة تتناسب مع التضخم المتصاعد.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DEMOGRAPHIC DISPARITIES TAB -->
+            <section id="tab-demographic" class="space-y-6 hidden">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center border-b pb-4 gap-4">
+                    <div>
+                        <h2 class="text-xl lg:text-2xl font-bold text-inp-navy">خريطة التفاوتات السكانية والديموغرافية بمصر</h2>
+                        <p class="text-xs text-slate-500 mt-1">تباينات النمو السكاني، الكثافة الصافية، نسب الحضر، القوة العاملة، ومعدلات الإعالة لعام 2024</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="updateDemographicChart('growth')" class="bg-inp-navy text-white text-xs px-3 py-1.5 rounded hover:bg-inp-navy/90 transition font-bold" id="btn-demo-growth">معدل النمو السكاني</button>
+                        <button onclick="updateDemographicChart('dependency')" class="bg-slate-200 text-slate-700 text-xs px-3 py-1.5 rounded hover:bg-slate-300 transition font-bold" id="btn-demo-dep">معدلات الإعالة</button>
+                        <button onclick="updateDemographicChart('illiteracy')" class="bg-slate-200 text-slate-700 text-xs px-3 py-1.5 rounded hover:bg-slate-300 transition font-bold" id="btn-demo-lit">معدلات الأمية</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <div class="h-[350px] relative">
+                            <canvas id="demographicChart"></canvas>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-4 text-center">المصدر: حسابات فريق الدراسة بناء على بيانات الجهاز المركزي للتعبئة العامة والإحصاء (تقديرات 2024 - 2025)</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                        <h3 class="text-base font-bold text-inp-navy border-b pb-2"><i class="fa-solid fa-list-check text-inp-gold ml-1"></i> أهم استنتاجات البعد الديموغرافي</h3>
+                        <ul class="space-y-3 text-xs text-slate-600">
+                            <li class="flex items-start gap-2">
+                                <span class="bg-inp-gold/20 text-inp-gold p-1 rounded-full h-5 w-5 flex items-center justify-center text-[10px] shrink-0 mt-0.5"><i class="fa-solid fa-check"></i></span>
+                                <span class="text-justify"><strong>تفاوت النمو السكاني:</strong> تترواح معدلات النمو بشكل واضح؛ حيث سجلت <strong>مطروح</strong> أعلى نمو بنحو (3.8%)، بينما انخفضت في القاهرة ودمياط إلى (1.1%).</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="bg-inp-gold/20 text-inp-gold p-1 rounded-full h-5 w-5 flex items-center justify-center text-[10px] shrink-0 mt-0.5"><i class="fa-solid fa-check"></i></span>
+                                <span class="text-justify"><strong>الكثافة الصافية المأهولة:</strong> يتركز سكان مصر في شريط ضيق يمثل 11.2% من المساحة الكلية، مما خلق كثافة مأهولة مهولة في القاهرة (53,95.3 نسمة/كم2) مقارنة بجنوب سيناء (22.4 نسمة/كم2).</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="bg-inp-gold/20 text-inp-gold p-1 rounded-full h-5 w-5 flex items-center justify-center text-[10px] shrink-0 mt-0.5"><i class="fa-solid fa-check"></i></span>
+                                <span class="text-justify"><strong>ثبات نسبة الحضر والريف:</strong> حافظت نسبة الحضر على ثبات نسبي بنحو (42.8%) وتتركز النسبة الكبرى للريف بالمنيا وقنا والبحيرة، وهو ما يحفز استمرار الهجرة من الريف إلى الحضر لغياب فرص حقيقية بالريف.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="bg-inp-gold/20 text-inp-gold p-1 rounded-full h-5 w-5 flex items-center justify-center text-[10px] shrink-0 mt-0.5"><i class="fa-solid fa-check"></i></span>
+                                <span class="text-justify"><strong>قاعدة الهرم السكاني:</strong> نسبة الأطفال تحت 15 سنة مرتفعة جداً بالجمهورية (34.2%)، مما زاد من أعباء الإعالة بشكل كبير وبخاصة في محافظات الصعيد كبني سويف والمنيا وسوهاج (معدلات إعالة تفوق 70%).</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ECONOMIC DISPARITIES TAB -->
+            <section id="tab-economic" class="space-y-6 hidden">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center border-b pb-4 gap-4">
+                    <div>
+                        <h2 class="text-xl lg:text-2xl font-bold text-inp-navy">خريطة التفاوتات الاقتصادية ومستويات المعيشة</h2>
+                        <p class="text-xs text-slate-500 mt-1">توزيع الناتج المحلي الإجمالي، فجوات الدخول، هيكل الإنفاق، وأثر التضخم الاستهلاكي في عام 2024</p>
+                    </div>
+                </div>
+
+                <!-- Economic Summary Stats -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xs font-bold text-slate-500">متوسط نصيب الفرد السنوي من الناتج المحلي (2024)</h4>
+                            <span class="text-emerald-600"><i class="fa-solid fa-coins"></i></span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-2xl font-black text-slate-800">123.4 ألف ج.م</span>
+                            <span class="text-xs text-slate-400">متوسط الجمهورية</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 leading-relaxed text-justify">
+                            سجلت جنوب سيناء وبورسعيد ومطروح وبحر الأحمر نصيباً هائلاً (يفوق 390 ألف جنيه) بفضل الأنشطة التعدينية والسياحية، في حين تقبع 15 محافظة تحت هذا المتوسط (أغلبها بالوجه القبلي والريف كالبحيرة وسوهاج وأسيوط بقيم تقل عن 45 ألف جنيه).
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xs font-bold text-slate-500 font-bold">متوسط الدخل السنوي الصافي للأسرة (2022)</h4>
+                            <span class="text-blue-600"><i class="fa-solid fa-wallet"></i></span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-2xl font-black text-slate-800">81.4 ألف ج.م</span>
+                            <span class="text-xs text-slate-400">متوسط الجمهورية</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 leading-relaxed text-justify">
+                            يمثل متوسط دخل الأسرة في الحضر (92.5 ألف جنيه) نحو 1.27 مرة من متوسط الريف (72.7 ألف جنيه). وتسجل بورسعيد الدخل الأعلى بنحو (114.5 ألف جنيه) في حين تسجل الأقصر وسوهاج الدخل الأدنى بنحو (66.3 ألف جنيه).
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xs font-bold text-slate-500 font-bold">هيكل الدخل السنوي للأسرة المصرية</h4>
+                            <span class="text-amber-600"><i class="fa-solid fa-pie-chart"></i></span>
+                        </div>
+                        <div class="h-[120px] relative">
+                            <canvas id="incomeSourceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GDP & Poverty Disparities Chart & Table -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                        <h3 class="text-base font-bold text-inp-navy border-b pb-2 flex items-center justify-between">
+                            <span>نصيب الفرد من الناتج المحلي السنوي (المحافظات المختارة)</span>
+                            <span class="text-[11px] font-bold text-slate-400">القيمة بالجنيه المصري</span>
+                        </h3>
+                        <div class="h-[300px] relative">
+                            <canvas id="gdpPerCapitaChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                        <h3 class="text-base font-bold text-inp-navy border-b pb-2">فئات الإنفاق وتأثير التضخم الاستهلاكي</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                            تشير الدراسة إلى ارتفاع قياسي ومستمر في الرقم القياسي لأسعار المستهلكين (والذي بلغ 256.5 نقطة في يوليو 2025 مقارنة بسنة الأساس 2018/2019)، وتركز هذا التضخم بصفة خاصة في السلع الغذائية (290.2 نقطة)، مما يهدد استقرار الطبقة المتوسطة ويرهق كاهل الفئات الفقيرة لزيادة إنفاقها على الطعام والشراب بنسب تفوق 35.9% من ميزانيتها.
+                        </p>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1 font-bold">
+                                    <span>الإنفاق على الطعام والشراب (من إجمالي الاستهلاك)</span>
+                                    <span class="text-inp-gold">35.9%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2">
+                                    <div class="bg-inp-gold h-2 rounded-full" style="width: 35.9%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1 font-bold">
+                                    <span>الإنفاق على السكن ومستلزماته</span>
+                                    <span class="text-blue-600">22.4%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 22.4%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1 font-bold">
+                                    <span>الإنفاق على الرعاية الصحية</span>
+                                    <span class="text-emerald-600">10.2%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2">
+                                    <div class="bg-emerald-600 h-2 rounded-full" style="width: 10.2%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SOCIAL DISPARITIES TAB -->
+            <section id="tab-social" class="space-y-6 hidden">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center border-b pb-4 gap-4">
+                    <div>
+                        <h2 class="text-xl lg:text-2xl font-bold text-inp-navy">خريطة الخدمات الاجتماعية وحماية رأس المال البشري</h2>
+                        <p class="text-xs text-slate-500 mt-1">تقييم النفاذ للخدمات الصحية والتعليمية وتغطية شبكات الحماية والتحويلات النقدية المشروطة</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Health Services Card -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between border-b pb-3 mb-4">
+                                <h3 class="text-sm font-bold text-inp-navy"><i class="fa-solid fa-notes-medical text-inp-gold ml-1"></i> الخدمات الصحية (الفرص والنواتج)</h3>
+                                <span class="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded font-bold">نقص العمالة والأسرّة</span>
+                            </div>
+                            <ul class="space-y-3 text-xs text-slate-600">
+                                <li class="text-justify"><strong>تراجع الكفاءة:</strong> تسجل مصر 0.5 مرفق رعاية أولية لكل 10,000 نسمة، ونحو 12 سريراً فقط بالمستشفيات لكل 10,000 نسمة وهو أقل بكثير من الهدف المستهدف وطنيا (30 سرير).</li>
+                                <li class="text-justify"><strong>أزمة الأطباء:</strong> تواجه المحافظات عجزاً حاداً في توافر الأطباء، ففي حين تبلغ بورسعيد معدلات جيدة (104.7 طبيب لكل 10 آلاف)، تنخفض في البحيرة والمنيا والفيوم إلى مستويات متدنية (نحو 12-14 طبيب فقط).</li>
+                                <li class="text-justify"><strong>وفيات الأطفال وأمراض الهزال:</strong> يرتفع وفيات الرضع بالريف إلى 32 لكل ألف مولود مقارنة بـ 24 بالحضر، بجانب انتشار مروع لمرض الأنيميا بين الأطفال دون سن الخامسة (تتجاوز 50% بالإسكندرية وسوهاج والمنيا ومطروح).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Education Services Card -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between border-b pb-3 mb-4">
+                                <h3 class="text-sm font-bold text-inp-navy"><i class="fa-solid fa-graduation-cap text-inp-gold ml-1"></i> الخدمات التعليمية وجودة التعلم</h3>
+                                <span class="bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded font-bold">عقبة الكثافة والتسرب</span>
+                            </div>
+                            <ul class="space-y-3 text-xs text-slate-600">
+                                <li class="text-justify"><strong>كثافة الفصول المرتفعة:</strong> تبلغ الكثافة الطلابية ذروتها في المرحلة الابتدائية بمتوسط (50 طالباً بالفصل)، وتصل في محافظات أسيوط والجيزة والمنيا والقليوبية إلى (55-56 طالباً بالفصل)، مما يقتل جودة التدريس الفعال.</li>
+                                <li class="text-justify"><strong>التسرب المدرسي:</strong> يرتفع تسرب الطلاب بشكل حاد في المرحلة الإعدادية لتصل النسبة الأعلى بمحافظات أسيوط وبني سويف والبحيرة ومطروح لغياب التحفيز وعمالة الأطفال.</li>
+                                <li class="text-justify"><strong>فجوة أمية الإناث:</strong> تبلغ الأمية 19.5% على المستوى الوطني، غير أنها ترتفع لدى الإناث إلى 23.1%، وتتعدى حاجز 30% بمحافظات البحيرة والفيوم والمنيا وسوهاج وأسيوط.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Social Protection Card -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between border-b pb-3 mb-4">
+                                <h3 class="text-sm font-bold text-inp-navy"><i class="fa-solid fa-shield-heart text-inp-gold ml-1"></i> منظومة الحماية والضمان</h3>
+                                <span class="bg-blue-100 text-blue-800 text-[10px] px-2 py-0.5 rounded font-bold">التحويلات وتأمين الاشتراكات</span>
+                            </div>
+                            <ul class="space-y-3 text-xs text-slate-600">
+                                <li class="text-justify"><strong>تكافل وكرامة:</strong> تحويلات نقدية مرنة وغير مشروطة موجهة لتوفير شبكة أمان لنحو 4.7 مليون أسرة بالجمهورية، وتتركز التغطية بشكل كبير ومحق في ريف الوجه القبلي لارتفاع حدة الفقر المادي والاجتماعي.</li>
+                                <li class="text-justify"><strong>دعم الغذاء البطاقي:</strong> يغطي نظام دعم التموين الذكي 61.7 مليون مواطن (58.3% من السكان)، ويسهم بقوة في توفير الطعام للأسر الأكثر فقراً، في حين يغطي التأمين الصحي 68.4% من إجمالي السكان.</li>
+                                <li class="text-justify"><strong>فجوة التأمينات والعمل غير الرسمي:</strong> تبلغ تغطية التأمين الاجتماعي 44.7% فقط من قوة العمل، مما يوضح وجود قطاع غير رسمي شاسع في الاقتصاد المصري يعجز عن التغطية التأمينية الكافية.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Human Capital Index Section -->
+                <div class="bg-slate-100 p-6 rounded-xl border border-slate-200 space-y-4">
+                    <h3 class="text-base font-bold text-inp-navy border-b pb-2"><i class="fa-solid fa-user-gear text-inp-gold ml-1"></i> مؤشر رأس المال البشري بمصر (HCI)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                        <div class="text-center md:border-l border-slate-300 py-3">
+                            <h4 class="text-xs text-slate-500 font-bold">قيمة مؤشر رأس المال البشري بمصر</h4>
+                            <p class="text-4xl font-black text-inp-navy mt-1">0.49</p>
+                            <p class="text-[10px] text-slate-400 mt-1">مما يعني أن الطفل المولود اليوم سيستغل 49% فقط من إمكاناته عند سن العمل</p>
+                        </div>
+                        <div class="text-center md:border-l border-slate-300 py-3">
+                            <h4 class="text-xs text-slate-500 font-bold">السنوات المتوقعة للتمدرس (معدلة بالجودة)</h4>
+                            <p class="text-4xl font-black text-amber-600 mt-1">6.5 <span class="text-xs text-slate-500">سنوات</span></p>
+                            <p class="text-[10px] text-slate-400 mt-1">من أصل 11.5 سنة يقضيها الطفل في المدارس نتيجة ضعف وتدني جودة التعليم</p>
+                        </div>
+                        <div class="text-center py-3">
+                            <h4 class="text-xs text-slate-500 font-bold">مؤشر رأس المال البشري المعدل بالتشغيل</h4>
+                            <p class="text-4xl font-black text-rose-600 mt-1">0.20</p>
+                            <p class="text-[10px] text-slate-400 mt-1">ينخفض المؤشر بشدة نتيجة ضعف كفاءة ومشاركة الإناث في سوق العمل وتفشي البطالة</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- COMPOSITE INDEX TAB -->
+            <section id="tab-composite" class="space-y-6 hidden">
+                <div class="flex items-center justify-between border-b pb-4">
+                    <div>
+                        <h2 class="text-xl lg:text-2xl font-bold text-inp-navy">مؤشر التفاوتات المكانية المركب بين المحافظات</h2>
+                        <p class="text-xs text-slate-500 mt-1">ترتيب المحافظات الـ 22 في المؤشر الرئيس والأبعاد الفرعية الثلاثة (ديموغرافي، اقتصادي، اجتماعي)</p>
+                    </div>
+                </div>
+
+                <!-- Custom Governorate Search & Comparator -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex flex-wrap gap-4 items-center justify-between mb-4">
+                        <h3 class="text-sm font-bold text-inp-navy"><i class="fa-solid fa-magnifying-glass text-inp-gold ml-1"></i> استكشف وحلل درجات محافظتك</h3>
+                        <div class="flex gap-2">
+                            <input type="text" id="govSearch" placeholder="ابحث باسم المحافظة..." onkeyup="filterGovTable()" class="border px-3 py-1.5 rounded-lg text-xs w-48 focus:outline-inp-gold">
+                            <button onclick="resetGovFilter()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3 py-1.5 rounded-lg transition font-bold">إعادة ضبط</button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-right text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 border-b text-slate-700">
+                                    <th class="p-3 font-bold">الترتيب</th>
+                                    <th class="p-3 font-bold">المحافظة</th>
+                                    <th class="p-3 font-bold text-center">مؤشر التفاوت المركب</th>
+                                    <th class="p-3 font-bold text-center">البعد الديموغرافي</th>
+                                    <th class="p-3 font-bold text-center">البعد الاقتصادي</th>
+                                    <th class="p-3 font-bold text-center">البعد الاجتماعي</th>
+                                    <th class="p-3 font-bold text-center">الحالة والتصنيف التنموي</th>
+                                </tr>
+                            </thead>
+                            <tbody id="govTableBody">
+                                <!-- Table Rows injected by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STATISTICAL DETERMINANTS TAB -->
+            <section id="tab-statistical" class="space-y-6 hidden">
+                <div class="flex items-center justify-between border-b pb-4">
+                    <div>
+                        <h2 class="text-xl lg:text-2xl font-bold text-inp-navy">العوامل الحاكمة للتفاوتات المكانية (دلالات إحصائية)</h2>
+                        <p class="text-xs text-slate-500 mt-1">تحليل الدلالات الإحصائية ونماذج الارتباط والانحدار المتعدد المفسرة للفجوات المكانية</p>
+                    </div>
+                </div>
+
+                <!-- Academic Research Stats Header Card -->
+                <div class="bg-slate-900 text-white rounded-xl p-6 shadow-md border-r-4 border-inp-gold flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div class="space-y-2">
+                        <h3 class="text-base font-bold text-inp-gold flex items-center gap-2">
+                            <i class="fa-solid fa-folder-open"></i> تفاصيل الثراء الإحصائي والبيانات بالدراسة
+                        </h3>
+                        <p class="text-xs text-slate-300 leading-relaxed text-justify max-w-2xl">
+                            تقدم هذه الدراسة تشخيصاً كمياً متطوراً للتفاوتات المكانية يعتمد على تجميع وتحليل البيانات الإحصائية الرسمية الصادرة عن الدولة. تحتوي الدراسة على <strong>أكثر من 30 جدولاً إحصائياً</strong> منظماً ونحو <strong>30 شكلاً توضيحياً</strong> ورسماً بيانياً متقدماً لتحديد العوامل الفاعلة وصنع نماذج قياسية دقيقة.
+                        </p>
+                    </div>
+                    <div class="flex gap-4 shrink-0">
+                        <div class="bg-white/10 p-4 rounded-lg text-center border border-white/10">
+                            <span class="block text-2xl font-black text-inp-gold">+30</span>
+                            <span class="text-[10px] text-slate-400 font-bold">جداول إحصائية محكمة</span>
+                        </div>
+                        <div class="bg-white/10 p-4 rounded-lg text-center border border-white/10">
+                            <span class="block text-2xl font-black text-inp-teal">+30</span>
+                            <span class="text-[10px] text-slate-400 font-bold">أشكال ورسوم بيانية</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Correlation & Regression analysis -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Correlation Coefficients Chart Card -->
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-base font-bold text-inp-navy border-b pb-2 mb-4 flex items-center justify-between">
+                                <span>معاملات الارتباط (بيرسون) مع مؤشر التفاوت المركب</span>
+                                <span class="text-[10px] text-slate-400">جميع المعاملات دالة عند مستويات $p < 0.01$ و $p < 0.05$</span>
+                            </h3>
+                            <div class="h-[300px] relative">
+                                <canvas id="correlationChart"></canvas>
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-4 text-center">المصدر: حسابات فريق العمل البحثي بالاعتماد على مخرجات نماذج SPSS القياسية</p>
+                    </div>
+
+                    <!-- Regression Equation Card -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-4">
+                        <div>
+                            <h3 class="text-base font-bold text-inp-navy border-b pb-2 mb-4">
+                                <i class="fa-solid fa-calculator text-inp-gold ml-1"></i> نموذج الانحدار الخطي المتعدد
+                            </h3>
+                            <p class="text-xs text-slate-600 leading-relaxed text-justify mb-4">
+                                لتحديد الوزن النسبي والتأثير الحقيقي للعوامل الحاكمة، تم بناء نموذج انحدار خطي متعدد لتقدير مستوى التنمية والعدالة المكانية ($Y$):
+                            </p>
+                            
+                            <!-- LaTeX style formula styling using custom classes and standard notation -->
+                            <div class="bg-slate-50 p-3 rounded-lg border text-center text-xs font-mono text-inp-navy dir-ltr mb-4">
+                                $Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \epsilon$
+                            </div>
+
+                            <p class="text-xs text-slate-500 leading-relaxed mb-4">حيث:</p>
+                            <ul class="space-y-2 text-xs text-slate-600">
+                                <li><strong>$Y$:</strong> درجة مؤشر الحرمان/التفاوت المكاني المركب.</li>
+                                <li><strong>$X_1$:</strong> نسبة الفقر المادي بالمحافظة (الوزن النسبي: $-0.48$).</li>
+                                <li><strong>$X_2$:</strong> معدل الأمية الإناث في المحافظة (الوزن النسبي: $-0.35$).</li>
+                                <li><strong>$X_3$:</strong> الكثافة الطلابية بفصول الابتدائي (الوزن النسبي: $-0.28$).</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-inp-gold/10 p-4 rounded-lg border border-inp-gold/20 text-xs">
+                            <span class="font-bold text-inp-navy block mb-1">القوة التفسيرية للنموذج:</span>
+                            تفسر هذه المتغيرات الثلاثة مجتمعة ما نسبته <strong class="text-inp-navy">$R^2 = 78.4\%$</strong> من الاختلافات والتفاوتات التنموية بين المحافظات المصرية، وهي دلالة إحصائية قوية للغاية تبرهن على دقة التشخيص.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Governing Factors Detail Table Grid -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-base font-bold text-inp-navy border-b pb-3 mb-4">
+                        <i class="fa-solid fa-list-check text-inp-gold ml-1"></i> أهم الدلالات الإحصائية للعوامل الحاكمة للتفاوتات المكانية
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="p-4 bg-slate-50 rounded-lg border-r-4 border-inp-navy">
+                            <h4 class="text-sm font-bold text-inp-navy mb-2">1. الفقر المادي ورأس المال البشري</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                                أثبتت المؤشرات الإحصائية وجود ارتباط سلبي قوي للغاية بلغت قيمته ($-0.842$) بين نسبة الفقر ومستوى التنمية التمكيني بالمحافظة. تتركز بؤر الفقر في ريف الصعيد وخاصة أسيوط وسوهاج لتدني الأنشطة الاقتصادية غير الزراعية والاعتماد الهائل على التحويلات.
+                            </p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-lg border-r-4 border-inp-gold">
+                            <h4 class="text-sm font-bold text-slate-800 mb-2">2. أمية الإناث ومستقبل الخصوبة</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                                تشير الجداول البحثية إلى أن أمية الإناث (التي ترتفع عن 30% بالصعيد) ترتبط بشكل طردي قوي مع معدل الإعالة السكانية والخصوبة العالية. يمثل الحرمان التعليمي للمرأة محركاً هيكلياً يعوق تراجع معدلات المواليد ويزيد من وتيرة التفاوت.
+                            </p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-lg border-r-4 border-inp-teal">
+                            <h4 class="text-sm font-bold text-slate-800 mb-2">3. نصيب الفرد من الأطباء والاستثمارات</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed text-justify">
+                                كشفت مصفوفات الارتباط أن نصيب الفرد من الإنفاق الاستثماري والموارد البشرية الطبية (الأطباء) بمحافظات الحضر يعادل 8 أضعاف مثيله بالريف، مما يخلق تفاوتاً جوهرياً في جودة مخرجات الصحة والتحصيل الأكاديمي للطلاب.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- POLICY ROADMAP TAB -->
+            <section id="tab-policies" class="space-y-6 hidden">
+                <div class="flex items-center justify-between border-b pb-4">
+                    <div>
+                        <h2 class="text-xl lg:text-2xl font-bold text-inp-navy">رؤية تحقيق العدالة المكانية وصنع القرار</h2>
+                        <p class="text-xs text-slate-500 mt-1">مجموعة السياسات والتدخلات التنموية المقترحة بناء على مخرجات دراسة معهد التخطيط القومي</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Policy Group 1 -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="mb-4">
+                                <span class="bg-inp-gold/20 text-inp-navy px-3 py-1 rounded-full text-[10px] font-bold">المجموعة الأولى</span>
+                                <h3 class="text-base font-bold text-slate-800 mt-2">طرق القياس، فجوة البيانات، وجودتها</h3>
+                            </div>
+                            <ul class="space-y-3 text-xs text-slate-600 list-disc list-inside text-justify">
+                                <li><strong>مستوى المعيشة اللائق:</strong> تحديد وتحديث المفهوم والحد الأدنى لتلبية الاحتياجات السكانية كمعيار مرجعي لقياس التنمية المحلية.</li>
+                                <li><strong>معايير موحدة للتقييم:</strong> تبني مؤشرات تتوافق مع المقاييس الدولية لقياس كفاءة وجودة وإتاحة خدمات الصحة والتعليم بشكل مستمر.</li>
+                                <li><strong>نظم المعلومات الجغرافية:</strong> استخدام الخرائط التفاعلية الجغرافية لمطابقة كثافة السكان بمستويات الحرمان وتوفير الاحتياجات بدقة.</li>
+                                <li><strong>تطوير بحوث ميزانية الأسرة:</strong> توفير التمويل لبحوث الدخل والإنفاق والاستهلاك بشكل دوري متناسق مع النشر الكامل للبيانات للباحثين.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-6 pt-4 border-t text-[11px] text-slate-500">
+                            <strong>التطبيق الأساسي:</strong> يساهم في سد الفجوات المعلوماتية التي تمثل العائق الأكبر لتنفيذ أي تخطيط علمي رصين.
+                        </div>
+                    </div>
+
+                    <!-- Policy Group 2 -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="mb-4">
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-[10px] font-bold">المجموعة الثانية</span>
+                                <h3 class="text-base font-bold text-slate-800 mt-2">الأطر المؤسسية والتمويلية</h3>
+                            </div>
+                            <ul class="space-y-3 text-xs text-slate-600 list-disc list-inside text-justify">
+                                <li><strong>تمكين الإدارات المحلية:</strong> الانتقال الفعلي للامركزية عبر منح سلطات تخطيطية وتنفيذية حقيقية للمحافظات مع مراقبة الأداء.</li>
+                                <li><strong>أطر تمويلية محلية:</strong> توفير موارد مالية مرنة وموازنات تضمن للمحافظات التدخل السريع ومقابلة احتياجات الخدمات والبنية التحتية.</li>
+                                <li><strong>تدريب الكوادر المحلية:</strong> رفع مهارات وكفاءات القائمين على التخطيط بالمحافظات وربط اختيار القيادات المحلية بالقدرة التنموية.</li>
+                                <li><strong>تعزيز المشاركة الشعبية:</strong> تفعيل دور مجالس أمناء المدارس والمستشفيات لإشراك المجتمع المحلي في صنع القرار ورقابة جودة الخدمات.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-6 pt-4 border-t text-[11px] text-slate-500">
+                            <strong>التطبيق الأساسي:</strong> يضمن التخصيص والإنفاق الكفء للموارد وتفعيل مبادئ الشفافية والمسؤولية في العمل التنموي.
+                        </div>
+                    </div>
+
+                    <!-- Policy Group 3 -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="mb-4">
+                                <span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-[10px] font-bold">المجموعة الثالثة</span>
+                                <h3 class="text-base font-bold text-slate-800 mt-2">توطين التنمية المستدامة</h3>
+                            </div>
+                            <ul class="space-y-3 text-xs text-slate-600 list-disc list-inside text-justify">
+                                <li><strong>تحديد المزايا التنافسية:</strong> إجراء مسح شامل للموارد والمقومات الطبيعية بكل محافظة وبناء أنشطة اقتصادية متخصصة ومستدامة حولها.</li>
+                                <li><strong>توطين الصناعات الصغيرة:</strong> تقديم التسهيلات والحوافز لتنمية ريادة الأعمال ودعم المشروعات الصغيرة والحرف المتوطنة ريفياً.</li>
+                                <li><strong>ربط التعليم بسوق العمل:</strong> توطين المناهج والتعليم الفني والجامعي ليلائم الصناعات والأنشطة الاقتصادية المتخصصة في الإقليم.</li>
+                                <li><strong>مستقبل ما بعد حياة كريمة:</strong> بناء استراتيجيات لصيانة واستمرارية تشغيل المرافق والإنشاءات الضخمة التي نفذتها مبادرة حياة كريمة بالريف.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-6 pt-4 border-t text-[11px] text-slate-500">
+                            <strong>التطبيق الأساسي:</strong> يخلق فرص عمل ذات جودة ويحد من الهجرة والفقر بالريف عبر التنمية المستدامة المبنية على الموارد الذاتية.
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts for UI Interactions and Charts -->
+    <script>
+        // Tab switching logic
+        function switchTab(tabId) {
+            // Hide all tab content
+            const tabs = ['overview', 'international', 'demographic', 'economic', 'social', 'composite', 'statistical', 'policies'];
+            tabs.forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`btn-${t}`).classList.remove('active-tab');
+            });
+
+            // Show current tab content and active layout
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.getElementById(`btn-${tabId}`).classList.add('active-tab');
+            
+            // Trigger specific charts initialization when tab becomes visible
+            if (tabId === 'demographic') {
+                initDemographicChart();
+            } else if (tabId === 'economic') {
+                initEconomicCharts();
+            } else if (tabId === 'statistical') {
+                initStatisticalCharts();
+            }
+        }
+
+        // Region selector information helper
+        function highlightRegion(region) {
+            const btnUrban = document.getElementById('region-urban');
+            const btnLower = document.getElementById('region-lower');
+            const btnUpper = document.getElementById('region-upper');
+            const btnFrontier = document.getElementById('region-frontier');
+            const detailsBox = document.getElementById('region-details');
+
+            // Reset borders
+            [btnUrban, btnLower, btnUpper, btnFrontier].forEach(btn => btn.classList.remove('border-inp-gold', 'bg-slate-50'));
+
+            if (region === 'urban') {
+                btnUrban.classList.add('border-inp-gold', 'bg-slate-50');
+                detailsBox.innerHTML = `<strong>المحافظات الحضرية:</strong> تمثل أعلى أداء تنموي بالجمهورية بالمؤشر المركب (بورسعيد 1، القاهرة 2)، وتستأثر بالنصيب الأكبر من الاستثمارات والعمالة المهنية، إلا أنها تواجه تحديات التضخم وارتفاع تكاليف السكن والازدحام المروري.`;
+            } else if (region === 'lower') {
+                btnLower.classList.add('border-inp-gold', 'bg-slate-50');
+                detailsBox.innerHTML = `<strong>الوجه البحري والدلتا:</strong> أداء متوازن ومتوسط تنموياً (دمياط 3، الدقهلية 7، الغربية 6). تتميز بالنشاط الزراعي والتجاري والصناعات الغذائية الكبرى والتحويلية وتوافر شبكة الخدمات، وتواجه تضخم فصول التعليم الابتدائية.`;
+            } else if (region === 'upper') {
+                btnUpper.classList.add('border-inp-gold', 'bg-slate-50');
+                detailsBox.innerHTML = `<strong>الوجه القبلي والصعيد:</strong> يمثل الإقليم الأدنى أداء تنموياً بالمؤشرات لتركز الفقر (أسيوط 66.7%)، وتسجيل أعلى معدلات تسرب التعليم الإعدادي بأسيوط وبني سويف، بجانب معدلات إعالة سكانية تفوق 70%.`;
+            } else if (region === 'frontier') {
+                btnFrontier.classList.add('border-inp-gold', 'bg-slate-50');
+                detailsBox.innerHTML = `<strong>محافظات الحدود:</strong> مساحات جغرافية شاسعة، وتجمع للثروات السياحية والتعدينية الطبيعية. تسجل أعلى معدلات نمو سكاني (مطروح 3.8%) وتفاوت جلي في إمكانية الوصول وتكلفة السلع والخدمات في ريفها وجزرها المترامية.`;
+            }
+        }
+
+        // DATABASE OF THE COMPOSITE INDEX (FROM STUDY RESULTS)
+        const compositeData = [
+            { rank: 1, name: "بورسعيد", score: 0.790, demo: 0.745, econ: 0.966, social: 0.659, status: "أداء ممتاز" },
+            { rank: 2, name: "القاهرة", score: 0.688, demo: 0.633, econ: 0.740, social: 0.691, status: "أداء مرتفع" },
+            { rank: 3, name: "دمياط", score: 0.625, demo: 0.668, econ: 0.439, social: 0.769, status: "أداء فوق المتوسط" },
+            { rank: 4, name: "السويس", score: 0.623, demo: 0.724, econ: 0.618, social: 0.528, status: "أداء فوق المتوسط" },
+            { rank: 5, name: "الإسكندرية", score: 0.598, demo: 0.660, econ: 0.601, social: 0.532, status: "أداء متوسط" },
+            { rank: 6, name: "الغربية", score: 0.587, demo: 0.643, econ: 0.468, social: 0.650, status: "أداء متوسط" },
+            { rank: 7, name: "الدقهلية", score: 0.583, demo: 0.677, econ: 0.324, social: 0.748, status: "أداء متوسط" },
+            { rank: 8, name: "المنوفية", score: 0.569, demo: 0.664, econ: 0.411, social: 0.631, status: "أداء متوسط" },
+            { rank: 9, name: "الإسماعيلية", score: 0.515, demo: 0.656, econ: 0.408, social: 0.480, status: "أداء متوسط" },
+            { rank: 10, name: "كفر الشيخ", score: 0.505, demo: 0.617, econ: 0.429, social: 0.469, status: "أداء متوسط" },
+            { rank: 11, name: "الشرقية", score: 0.503, demo: 0.580, econ: 0.318, social: 0.612, status: "أداء متوسط" },
+            { rank: 12, name: "أسوان", score: 0.464, demo: 0.683, econ: 0.194, social: 0.516, status: "أداء تحت المتوسط" },
+            { rank: 13, name: "القليوبية", score: 0.424, demo: 0.487, econ: 0.447, social: 0.339, status: "أداء تحت المتوسط" },
+            { rank: 14, name: "الجيزة", score: 0.396, demo: 0.512, econ: 0.419, social: 0.258, status: "أداء ضعيف" },
+            { rank: 15, name: "الأقصر", score: 0.385, demo: 0.544, econ: 0.193, social: 0.417, status: "أداء ضعيف" },
+            { rank: 16, name: "البحيرة", score: 0.379, demo: 0.518, econ: 0.266, social: 0.353, status: "أداء ضعيف" },
+            { rank: 17, name: "الفيوم", score: 0.350, demo: 0.535, econ: 0.315, social: 0.200, status: "أداء شديد الضعف" },
+            { rank: 18, name: "بني سويف", score: 0.347, demo: 0.508, econ: 0.343, social: 0.191, status: "أداء شديد الضعف" },
+            { rank: 19, name: "قنا", score: 0.322, demo: 0.502, econ: 0.208, social: 0.258, status: "أداء شديد الضعف" },
+            { rank: 20, name: "المنيا", score: 0.286, demo: 0.372, econ: 0.241, social: 0.247, status: "حرمان شديد" },
+            { rank: 21, name: "سوهاج", score: 0.264, demo: 0.370, econ: 0.113, social: 0.310, status: "حرمان شديد" },
+            { rank: 22, name: "أسيوط", score: 0.211, demo: 0.337, econ: 0.069, social: 0.228, status: "حرمان شديد" }
+        ];
+
+        // Inject Table Data
+        function injectTable(data) {
+            const tableBody = document.getElementById('govTableBody');
+            tableBody.innerHTML = '';
+            data.forEach(gov => {
+                let statusColor = "bg-slate-100 text-slate-800";
+                if (gov.rank <= 4) statusColor = "bg-emerald-100 text-emerald-800 font-bold";
+                else if (gov.rank <= 11) statusColor = "bg-blue-100 text-blue-800";
+                else if (gov.rank <= 16) statusColor = "bg-amber-100 text-amber-800";
+                else statusColor = "bg-rose-100 text-rose-800 font-bold";
+
+                const rowHtml = `
+                    <tr class="border-b hover:bg-slate-50 transition">
+                        <td class="p-3 font-bold text-slate-600">${gov.rank}</td>
+                        <td class="p-3 font-bold text-inp-navy">${gov.name}</td>
+                        <td class="p-3 text-center text-inp-gold font-bold">${gov.score.toFixed(3)}</td>
+                        <td class="p-3 text-center text-slate-500">${gov.demo.toFixed(3)}</td>
+                        <td class="p-3 text-center text-slate-500">${gov.econ.toFixed(3)}</td>
+                        <td class="p-3 text-center text-slate-500">${gov.social.toFixed(3)}</td>
+                        <td class="p-3 text-center">
+                            <span class="${statusColor} px-2.5 py-1 rounded text-[10px] font-bold inline-block">${gov.status}</span>
+                        </td>
+                    </tr>
+                `;
+                tableBody.insertAdjacentHTML('beforeend', rowHtml);
+            });
+        }
+
+        // Filter & Search table
+        function filterGovTable() {
+            const val = document.getElementById('govSearch').value.trim();
+            const filtered = compositeData.filter(gov => gov.name.includes(val));
+            injectTable(filtered);
+        }
+
+        function resetGovFilter() {
+            document.getElementById('govSearch').value = '';
+            injectTable(compositeData);
+        }
+
+        // CHARTS LOGIC
+        let demoChartInstance = null;
+        let incomeChartInstance = null;
+        let gdpChartInstance = null;
+        let correlationChartInstance = null;
+
+        // Demographic Chart config
+        function initDemographicChart() {
+            if (demoChartInstance) return; // avoid double init
+            const ctx = document.getElementById('demographicChart').getContext('2d');
+            
+            // Default: demographic growth rates
+            demoChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['مطروح', 'شمال سيناء', 'جنوب سيناء', 'الجيزة', 'أسيوط', 'سوهاج', 'المنيا', 'القاهرة', 'دمياط'],
+                    datasets: [{
+                        label: 'معدل النمو السكاني % (2017 - 2025)',
+                        data: [3.8, 3.2, 3.1, 2.5, 2.4, 2.4, 2.3, 1.1, 1.1],
+                        backgroundColor: '#1E293B',
+                        borderColor: '#C5A880',
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, labels: { font: { family: 'Cairo' } } }
+                    },
+                    scales: {
+                        y: { beginAtZero: true },
+                        x: { ticks: { font: { family: 'Cairo' } } }
+                    }
+                }
+            });
+        }
+
+        function updateDemographicChart(type) {
+            if (!demoChartInstance) return;
+            
+            const btnGrowth = document.getElementById('btn-demo-growth');
+            const btnDep = document.getElementById('btn-demo-dep');
+            const btnLit = document.getElementById('btn-demo-lit');
+
+            // Reset buttons
+            [btnGrowth, btnDep, btnLit].forEach(btn => btn.classList.replace('bg-inp-navy', 'bg-slate-200'));
+            [btnGrowth, btnDep, btnLit].forEach(btn => btn.classList.replace('text-white', 'text-slate-700'));
+
+            if (type === 'growth') {
+                btnGrowth.classList.replace('bg-slate-200', 'bg-inp-navy');
+                btnGrowth.classList.replace('text-slate-700', 'text-white');
+                demoChartInstance.data.labels = ['مطروح', 'شمال سيناء', 'جنوب سيناء', 'الجيزة', 'أسيوط', 'سوهاج', 'المنيا', 'القاهرة', 'دمياط'];
+                demoChartInstance.data.datasets[0].label = 'معدل النمو السكاني % (2017 - 2025)';
+                demoChartInstance.data.datasets[0].data = [3.8, 3.2, 3.1, 2.5, 2.4, 2.4, 2.3, 1.1, 1.1];
+                demoChartInstance.data.datasets[0].backgroundColor = '#1E293B';
+            } else if (type === 'dependency') {
+                btnDep.classList.replace('bg-slate-200', 'bg-inp-navy');
+                btnDep.classList.replace('text-slate-700', 'text-white');
+                demoChartInstance.data.labels = ['مطروح', 'بني سويف', 'سوهاج', 'المنيا', 'جنوب سيناء', 'الغربية', 'الإسكندرية', 'القاهرة'];
+                demoChartInstance.data.datasets[0].label = 'معدل الإعالة الكلية % (تعداد 2017)';
+                demoChartInstance.data.datasets[0].data = [75.9, 72.3, 71.1, 70.0, 69.6, 58.1, 52.3, 46.3];
+                demoChartInstance.data.datasets[0].backgroundColor = '#C5A880';
+            } else if (type === 'illiteracy') {
+                btnLit.classList.replace('bg-slate-200', 'bg-inp-navy');
+                btnLit.classList.replace('text-slate-700', 'text-white');
+                demoChartInstance.data.labels = ['المنيا', 'أسيوط', 'بني سويف', 'الفيوم', 'البحيرة', 'الغربية', 'بورسعيد', 'البحر الأحمر'];
+                demoChartInstance.data.datasets[0].label = 'نسبة السكان الأميين % (تعداد 2017)';
+                demoChartInstance.data.datasets[0].data = [37.2, 34.6, 35.9, 34.0, 32.9, 21.4, 14.1, 12.0];
+                demoChartInstance.data.datasets[0].backgroundColor = '#E11D48';
+            }
+            demoChartInstance.update();
+        }
+
+        // Economic Charts config
+        function initEconomicCharts() {
+            if (incomeChartInstance && gdpChartInstance) return;
+
+            // 1. Income Source Pie Chart
+            if (!incomeChartInstance) {
+                const ctxIncome = document.getElementById('incomeSourceChart').getContext('2d');
+                incomeChartInstance = new Chart(ctxIncome, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['الدخل من العمل', 'التحويلات الجارية (دعم ومعاشات)', 'القيمة الإيجارية التقديرية', 'الدخل من الممتلكات'],
+                        datasets: [{
+                            data: [65.4, 22.2, 9.2, 3.2],
+                            backgroundColor: ['#0F2C59', '#C5A880', '#10B981', '#64748B']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+
+            // 2. GDP comparison Chart (Selected Governorates)
+            if (!gdpChartInstance) {
+                const ctxGdp = document.getElementById('gdpPerCapitaChart').getContext('2d');
+                gdpChartInstance = new Chart(ctxGdp, {
+                    type: 'bar',
+                    data: {
+                        labels: ['جنوب سيناء', 'بورسعيد', 'القاهرة', 'الإسكندرية', 'الشرقية', 'قنا', 'أسيوط'],
+                        datasets: [{
+                            label: 'نصيب الفرد من الناتج المحلي (2024)',
+                            data: [1195.5, 486.0, 295.0, 203.0, 109.0, 56.8, 38.3],
+                            backgroundColor: '#0F2C59',
+                            borderColor: '#C5A880',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Governing Factors (Statistical Charts) config
+        function initStatisticalCharts() {
+            if (correlationChartInstance) return;
+            const ctxCorr = document.getElementById('correlationChart').getContext('2d');
+            correlationChartInstance = new Chart(ctxCorr, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        'معدل الفقر المادي', 
+                        'معدل أمية الإناث', 
+                        'معدل الإعالة الكلية', 
+                        'كثافة فصول الابتدائي', 
+                        'نسبة الاتصال بالصرف الصحي', 
+                        'نصيب الفرد من الاستثمارات العامة'
+                    ],
+                    datasets: [{
+                        label: 'قيمة معامل الارتباط (r)',
+                        data: [-0.842, -0.789, -0.712, -0.620, 0.654, 0.718],
+                        backgroundColor: function(context) {
+                            const val = context.raw;
+                            return val < 0 ? 'rgba(225, 29, 72, 0.85)' : 'rgba(16, 185, 129, 0.85)';
+                        },
+                        borderColor: function(context) {
+                            const val = context.raw;
+                            return val < 0 ? '#E11D48' : '#10B981';
+                        },
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            min: -1.0,
+                            max: 1.0,
+                            ticks: { font: { family: 'Cairo' } }
+                        },
+                        y: {
+                            ticks: { font: { family: 'Cairo' } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Window load initialization
+        window.onload = function () {
+            injectTable(compositeData);
+        }
+    </script>
+</body>
+</html>
